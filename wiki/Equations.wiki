@@ -1,6 +1,6 @@
 #summary DieselFoam's olika ekvationer med tillhörande kommentarer om beroende
 
-==rhoEqn.H==
+==[http://code.google.com/p/openfoam-openmp/source/browse/trunk/rhoEqn.H rhoEqn.H]==
 Körs i roten av `while`-loopen, men anropas även av [Equations#pEqn.H pEqn.H]
 
 {{{
