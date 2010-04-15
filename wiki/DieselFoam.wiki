@@ -1,4 +1,4 @@
-#summary DieselFoam.C med länknig
+#summary DieselFoam.C
 
 = DieselFoam =
 
