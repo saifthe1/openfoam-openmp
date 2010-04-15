@@ -1,7 +1,7 @@
 rho = thermo.rho();
 
-volScalarField A = UEqn.A();
-U = UEqn.H()/A;
+volScalarField rUA = 1.0/UEqn.A();
+U = rUA*UEqn.H();
 
 if (transonic)
 {
@@ -9,7 +9,10 @@ if (transonic)
     (
         "phid",
         fvc::interpolate(psi)
-       *((fvc::interpolate(U) & mesh.Sf()) - fvc::meshPhi(rho, U))
+       *(
+            (fvc::interpolate(U) & mesh.Sf())
+          + fvc::ddtPhiCorr(rUA, rho, U, phi)
+        )
     );
 
     for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
@@ -18,7 +21,7 @@ if (transonic)
         (
             fvm::ddt(psi, p)
           + fvm::div(phid, p)
-          - fvm::laplacian(rho/A, p)
+          - fvm::laplacian(rho*rUA, p)
          ==
             Sevap
         );
@@ -33,8 +36,12 @@ if (transonic)
 }
 else
 {
-    phi = fvc::interpolate(rho)
-         *((fvc::interpolate(U) & mesh.Sf()) - fvc::meshPhi(rho, U));
+    phi =
+        fvc::interpolate(rho)
+       *(
+            (fvc::interpolate(U) & mesh.Sf())
+          + fvc::ddtPhiCorr(rUA, rho, U, phi)
+        );
 
     for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
     {
@@ -42,7 +49,7 @@ else
         (
             fvm::ddt(psi, p)
           + fvc::div(phi)
-          - fvm::laplacian(rho/A, p)
+          - fvm::laplacian(rho*rUA, p)
          ==
             Sevap
         );
@@ -59,7 +66,7 @@ else
 #include "rhoEqn.H"
 #include "compressibleContinuityErrs.H"
 
-U -= fvc::grad(p)/A;
+U -= rUA*fvc::grad(p);
 U.correctBoundaryConditions();
 
 DpDt = fvc::DDt(surfaceScalarField("phiU", phi/fvc::interpolate(rho)), p);
