@@ -72,6 +72,7 @@ Inga tilldelningar alls. Vi måste undersöka vidare vad de olika operatorerna o
 
 ==YEqn.H==
 [http://code.google.com/p/openfoam-openmp/source/browse/trunk/YEqn.H code]
+
 Körs i den yttre av `for`-looparna
 
 {{{
@@ -128,6 +129,7 @@ Förutom det trolleri som `solve()` åstakommer, ändrar den bara på lokala var
 
 ==hEqn.H==
 [http://code.google.com/p/openfoam-openmp/source/browse/trunk/hEqn.H code]
+
 Körs i den yttre av `for`-looparna
 
 {{{
@@ -152,6 +154,7 @@ Det är endast `thermo.correct()` och `solve()` som anropas, kontrollera dessa.
 
 ==pEqn.H==
 [http://code.google.com/p/openfoam-openmp/source/browse/trunk/pEqn.H code]
+
 Körs i den innre `for`-loopen
 
 {{{
