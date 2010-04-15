@@ -1,7 +1,5 @@
-= DieselFoam's olika ekvationer =
-Med tillhörande kommentarer om beroende
-
-== rhoEqn.H ==
+#summary DieselFoam's olika ekvationer med tillhörande kommentarer om beroende
+=== rhoEqn.H ===
 Körs i roten av `while`-loopen, men anropas även av `pEqn.H`
 
 {{{
