@@ -1,7 +1,7 @@
 #summary DieselFoam's olika ekvationer med tillhörande kommentarer om beroende
 
-== rhoEqn.H ==
-Körs i roten av `while`-loopen, men anropas även av `pEqn.H`
+==rhoEqn.H==
+Körs i roten av `while`-loopen, men anropas även av [Equations#pEqn.H pEqn.H]
 
 {{{
 volScalarField Sevap
@@ -144,7 +144,7 @@ Det är endast `thermo.correct()` och `solve()` som anropas, kontrollera dessa.
 
 ----
 
-== pEqn.H ==
+=pEqn.H=
 Körs i den innre `for`-loopen
 
 {{{
