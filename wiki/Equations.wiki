@@ -144,7 +144,7 @@ Det är endast `thermo.correct()` och `solve()` som anropas, kontrollera dessa.
 
 ----
 
-=pEqn.H=
+==pEqn.H==
 Körs i den innre `for`-loopen
 
 {{{
