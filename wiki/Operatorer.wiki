@@ -21,4 +21,4 @@ void 	operator= (const tmp< T > &)
 
 Se upp för (), då detta kan se ut som ett funktionsanrop, men är en operator som returnerar T-objektet.
 
-I övrigt finns tonvis med operatorer överlagrade för hela namespacet. [http://foam.sourceforge.net/doc/Doxygen/html/fvMatrix_8H_source.html] [http://foam.sourceforge.net/doc/Doxygen/html/fvMatrix_8C_source.html fvMatrix källkod]
+I övrigt finns tonvis med operatorer överlagrade för hela namespacet. Deklarationer hittas i [http://foam.sourceforge.net/doc/Doxygen/html/fvMatrix_8H_source.html fvMatrixs header] och definitioner [http://foam.sourceforge.net/doc/Doxygen/html/fvMatrix_8C_source.html fvMatrixs källkod].
