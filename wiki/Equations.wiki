@@ -1,4 +1,4 @@
-#summary DieselFoam's olika ekvationer med tillhörande kommentarer om beroende
+#summary [DieselFoam]'s olika ekvationer med tillhörande kommentarer om beroende
 
 ==rhoEqn.H== 
 [http://code.google.com/p/openfoam-openmp/source/browse/trunk/rhoEqn.H code]
