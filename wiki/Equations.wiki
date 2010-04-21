@@ -75,6 +75,22 @@ if (momentumPredictor)
 
 Inga tilldelningar alls. Vi måste undersöka vidare vad de olika operatorerna och `solve()` gör, för att kunna förstå vart resultatet från ekvationen sparas.
 
+Eftersom det andra stycket är beroende av det första, måste det hela utföras sekventiellt. Dock kan man med fördel dela upp beräkningarna som blir argument till `UEqn`'s konstruktor. Detta t.ex. med:
+
+{{{
+tmp<T> t1, t2;
+#sections
+{
+    #section
+        t1 = fvm::ddt(rho, U) + fvm::div(phi, U)
+    #section
+        t2 = rho*g
+    #seciton
+        t3 = turbulence->divDevRhoReff(U) == dieselSpray.momentumSource()
+}
+UEqn(t1 + t3 == t2);
+}}}
+
 ----
 
 ==YEqn.H==
