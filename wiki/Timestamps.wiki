@@ -24,7 +24,7 @@ Tagna med vår nya ts klass!
 ||dieselFoam.C||> while > dieselSplay.evolve()||01.273||2||
 ||pEqn.H||> rUA`*`UEqn.H()||00.592||4||
 ||pEqn.H||> else > for > pEqn||00.591||4||
-||rhoEqn.h||||00.499||6||
+||rhoEqn.h||> `*`||00.499||6||
 ||pEqn.H||> rUA`*`fvc::grad(p)||00.459||4||
 ||pEqn.H||> fvc::DDt()||00.416||4||
 ||rhoEqn.h||> solve||00.400||6||
