@@ -38,9 +38,16 @@ for (label i=0; i<Y.size(); i++)
     );
 }
 }}}
-Består av tre delar: `Sevap` skapas, `Sevap` inkrementeras, och `solve()`.
 
-Med stor sannolikhet är det bara solve som är muterande.
+Det är bara solve som är muterande.
+
+Parallellisering av `for`-loopen m.h.a. är pågående
+{{{
+#pragma omp parallel for      \  
+  default(shared) private(i)  \  
+  schedule(static,chunk)      \  
+  reduction(+:result)  
+}}}
 
 ----
 
