@@ -22,10 +22,10 @@ Tagna med vår nya ts klass!
 ||hEqn.H||> solve()||1.44||2||
 ||hEqn.H||> thermo.correct()||1.32||2||
 ||dieselFoam.C||> while > dieselSplay.evolve()||1.27||2||
-||pEqn.H||> rUA*UEqn.H()||0.59||4||
+||pEqn.H||> rUA`*`UEqn.H()||0.59||4||
 ||pEqn.H||> else > for > pEqn||0.59||4||
-||rhoEqn.h||> * ||0.5||6||
-||pEqn.H||> rUA*fvc::grad(p)||0.46||4||
+||rhoEqn.h||> `*` ||0.5||6||
+||pEqn.H||> rUA`*`fvc::grad(p)||0.46||4||
 ||pEqn.H||> fvc::DDt()||0.42||4||
 ||rhoEqn.h||> solve||0.4||6||
 ||pEqn.H||> rhoEqn.H||0.33||4||
@@ -36,7 +36,7 @@ Tagna med vår nya ts klass!
 ||dieselFoam.C||> while > turbulent time scale||0.14||2||
 ||compressibleContinuityErrs.H||> globalContErr||0.08||4||
 ||rhoEqn.h||> for||0.07||6||
-||rhoEqn.h||> for > *||0.07||30||
+||rhoEqn.h||> for > `*`||0.07||30||
 ||compressibleContinuityErrs.H||> sumLocalContErr||0.06||4||
 ||pEqn.H||> 1.0/UEqn.A()||0.06||4||
 ||rhoEqn.h||> Sevap||0.02||6||
