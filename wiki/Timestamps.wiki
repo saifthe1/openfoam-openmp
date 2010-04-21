@@ -1,0 +1,50 @@
+#summary Något utförligare timestamps
+
+= ! =
+||Filnamn||Lokalitet||Tidsåtgång||Körningar||
+||dieselFoam.C||> while||27.01||1||
+||dieselFoam.C||> while > for||16.89||2||
+||dieselFoam.C||> while > for > for > pEqn||10.36||4||
+||pEqn.H||> if/else||8.33||4||
+||pEqn.H||> else > for||6.77||4||
+||pEqn.H||> else > for > pEqn.solve()||5.92||4||
+||dieselFoam.C||> while > UEqn.H||4.64||2||
+||dieselFoam.C||> while > for > YEqn.H||3.77||2||
+||iYEqn.H||> for||3.74||2||
+||YEqn.H||> for > if > solve||3.7||8||
+||dieselFoam.C||> while > turbulence->correct()||3.64||2||
+||dieselFoam.C||> while > for > hEqn.H||2.76||2||
+||UEqn.H||> UEqn||2.36||2||
+||UEqn.H||> if||2.28||2||
+||pEqn.H||> else > phi =||1.56||4||
+||hEqn.H||> solve()||1.44||2||
+||hEqn.H||> thermo.correct()||1.32||2||
+||dieselFoam.C||> while > dieselSplay.evolve()||1.27||2||
+||pEqn.H||> rUA*UEqn.H()||0.59||4||
+||pEqn.H||> else > for > pEqn||0.59||4||
+||rhoEqn.h||||0.5||6||
+||pEqn.H||> rUA*fvc::grad(p)||0.46||4||
+||pEqn.H||> fvc::DDt()||0.42||4||
+||rhoEqn.h||> solve||0.4||6||
+||pEqn.H||> rhoEqn.H||0.33||4||
+||pEqn.H||> else > for > if||0.26||4||
+||dieselFoam.C||> while > compressibleCourantNo.H||0.17||2||
+||dieselFoam.C||> while > rhoEqn.H||0.17||2||
+||pEqn.H||> compressibleContinuityErrs.H||0.16||4||
+||dieselFoam.C||> while > turbulent time scale||0.14||2||
+||compressibleContinuityErrs.H||> globalContErr||0.08||4||
+||rhoEqn.h||> for||0.07||6||
+||rhoEqn.h||> for > *||0.07||30||
+||compressibleContinuityErrs.H||> sumLocalContErr||0.06||4||
+||pEqn.H||> 1.0/UEqn.A()||0.06||4||
+||rhoEqn.h||> Sevap||0.02||6||
+||dieselFoam.C||> while > spraySummary.H||0.02||2||
+||dieselFoam.C||> while > chimistry.solve()||0.02||2||
+||compressibleContinuityErrs.H||> totalMass||0.01||4||
+||pEqn.H||> thermo.rho()||0.01||4||
+||dieselFoam.C||> while > thermo.rho()||0.01||2||
+||dieselFoam.C||> while > readPISOControls.H||0||2||
+||YEqn.H||> mvConvection||8.26E-005||2||
+||dieselFoam.C||> while > setDeltaT.H||6.45E-005||2||
+||pEqn.H||> U.correctBoundaryConditions()||2.79E-005||4||
+||compressibleContinuityErrs.H||> cumulativeContErr||1.56E-005||4||
