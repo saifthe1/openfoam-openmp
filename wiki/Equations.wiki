@@ -186,7 +186,7 @@ Det är endast `thermo.correct()` och `solve()` som anropas, kontrollera dessa.
 Parallellisering av `solve()`'s parametrar:
 
 {{{
-fvScalarMatrix *left1, *left2;
+fvScalarMatrix *left1, *left2, *left3;
 volScalarField *right;
 
 #pragma omp sections
@@ -194,12 +194,14 @@ volScalarField *right;
     #pragma omp section
         left1 = new fvScalarMatrix(fvm::ddt(rho, h)());
     #pragma omp section
-        left2 = new fvScalarMatrix(mvConvection->fvmDiv(phi, h) - fvm::laplacian(turbulence->alphaEff(), h));
-    #pragma omp section
+    {
+        left2 = new fvScalarMatrix(mvConvection->fvmDiv(phi, h));
+        left3 = new fvScalarMatrix(fvm::laplacian(turbulence->alphaEff(), h));
         right = new volScalarField(DpDt + dieselSpray.heatTransferSource());
+    }
 }
 
-solve( *left1 + *left2 == *right );
+solve( *left1 + *left2 -(*left3) == *right );
 }}}
 
 ----
