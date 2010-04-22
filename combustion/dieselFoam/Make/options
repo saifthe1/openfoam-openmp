@@ -1,6 +1,4 @@
 EXE_INC = \
-    -I../dieselEngineFoam \
-    -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/turbulenceModels/compressible/turbulenceModel \
     -I$(LIB_SRC)/lagrangian/basic/lnInclude \
     -I$(LIB_SRC)/lagrangian/dieselSpray/lnInclude \
@@ -13,7 +11,10 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/laminarFlameSpeed/lnInclude \
     -I$(LIB_SRC)/../applications/solvers/reactionThermo/XiFoam \
     -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I../dieselEngineFoam \
     -I$(LIB_SRC)/ODE/lnInclude -fopenmp
+
 
 EXE_LIBS = \
     -lcompressibleRASModels \

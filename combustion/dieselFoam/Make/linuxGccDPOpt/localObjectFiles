@@ -1,3 +1,2 @@
 LOCAL_OBJECTS = \
-dieselFoam.o\
-timestamp.o
+dieselFoam.o

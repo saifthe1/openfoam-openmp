@@ -29,7 +29,10 @@ Description
     Solver for diesel spray and combustion.
 
 \*---------------------------------------------------------------------------*/
+
+#include "/home/zut/OpenFOAM/timestamp.hpp"
 #include <omp.h>
+
 #include "fvCFD.H"
 #include "hCombustionThermo.H"
 #include "turbulenceModel.H"
@@ -47,6 +50,8 @@ Description
 
 int main(int argc, char *argv[])
 {
+	TS_TOGGLE(false);
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
@@ -59,110 +64,98 @@ int main(int argc, char *argv[])
     #include "compressibleCourantNo.H"
     #include "setInitialDeltaT.H"
 
-   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+	// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     Info << "\nStarting time loop\n" << endl;
 	
-  //  int yttreforlooptot = 0;
-  //  int inreforlooptot = 0;
-#pragma omp parallel
-{
-    while (runTime.run())
-    {
-//skapa variablerna som sätts i critical-sektionen
-   dictionary *piso;
-    int *nCorr;
-    int *nNonOrthCorr;
-    bool *momentumPredictor;
-    bool *transonic;
-    int *nOuterCorr;
-    
-//pEqn.H anropar UEqn.A()
-    fvVectorMatrix *UEqn;
-// I rhoEqn.H
-	volScalarField *Sevap;
+	// Deklarera variablerna som sätts i single-blocket
+	dictionary *piso 		= NULL;
+	int *nCorr				= NULL,
+		*nNonOrthCorr		= NULL,
+		*nOuterCorr			= NULL;
 
-#pragma omp single
-{
-        #include "readPISOControls.H"
-        #include "compressibleCourantNo.H"
-        #include "setDeltaT.H"
+	bool *momentumPredictor	= NULL,
+		 *transonic			= NULL;
 
-        runTime++;
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+	// I UEqn.H
+	fvVectorMatrix *UEqn	= NULL;
+	// I rhoEqn.H
+	volScalarField *Sevap	= NULL;
 
-        Info << "Evolving Spray" << endl;
+	#pragma omp parallel
+	{
+		while (runTime.run())
+		{
+			#pragma omp single
+			{
+				#include "readPISOControls.H"
+				#include "compressibleCourantNo.H"
+				#include "setDeltaT.H"
 
-        dieselSpray.evolve();
+				runTime++;
+				Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        Info << "Solving chemistry" << endl;
+				Info << "Evolving Spray" << endl;
 
-        chemistry.solve
-        (
-            runTime.value() - runTime.deltaT().value(),
-            runTime.deltaT().value()
-        );
+				dieselSpray.evolve();
 
-        // turbulent time scale
-        {
-            volScalarField tk =
-                Cmix*sqrt(turbulence->muEff()/rho/turbulence->epsilon());
-            volScalarField tc = chemistry.tc();
+				Info << "Solving chemistry" << endl;
 
-            // Chalmers PaSR model
-            kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
-        }
+				chemistry.solve
+				(
+					runTime.value() - runTime.deltaT().value(),
+					runTime.deltaT().value()
+				);
 
-        #include "rhoEqn.H"
-        #include "UEqn.H"
-}//pragma omp critical slut
+				// turbulent time scale
+				{
+					volScalarField tk =
+					Cmix*sqrt(turbulence->muEff()/rho/turbulence->epsilon());
+					volScalarField tc = chemistry.tc();
 
-//int yttreforloop = 0;
-//int inreforloop = 0;
+					// Chalmers PaSR model
+					kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
+				}
 
-#pragma omp for
-        for (label ocorr=1; ocorr <= *nOuterCorr; ocorr++)
-        {
-//Info<< nl << "ANTAL TRÅDAR I OPENMP " << omp_get_num_threads() << nl <<endl;
-//yttreforloop++;
-//yttreforlooptot++;
-            #include "YEqn.H"
-            #include "hEqn.H"
+				#include "rhoEqn.H"
+				#include "UEqn.H"
+			} // #pragma omp single
 
-            // --- PISO loop
-//#pragma omp for
-            for (int corr=1; corr<=*nCorr; corr++)
-            {
-//inreforlooptot++;
-//inreforloop++;
-                #include "pEqn.H"
-            }
-        }
-		
-        turbulence->correct();
 
-        #include "spraySummary.H"
+			for (label ocorr=1; ocorr <= *nOuterCorr; ocorr++)
+			{
+				#include "YEqn.H"
+				#include "hEqn.H"
 
-        rho = thermo.rho();
+				// --- PISO loop
+				for (int corr=1; corr<=*nCorr; corr++)
+				{
+					#include "pEqn.H"
+				}
+			}
 
-        if (runTime.write())
-        {
-            chemistry.dQ()().write();
-        }
+			turbulence->correct();
 
-        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
-            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-//	    << nl
-//	    << "yttre for-loopen körs " << yttreforlooptot << " gånger"
-//	    << nl
-//	    << "inre for-loopen körs  " << inreforlooptot << " gånger"
-            << nl << endl;
-    }
-}//pragma omp parallel slut
+			#include "spraySummary.H"
 
-    Info<< "End\n" << endl;
-std:: cout << omp_get_max_threads() << std:: endl;
-    return 0;
+			rho = thermo.rho();
+
+			if (runTime.write())
+			{
+				chemistry.dQ()().write();
+			}
+
+			Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+			<< "  ClockTime = " << runTime.elapsedClockTime() << " s"
+			<< nl << endl;
+		}
+	}//pragma omp parallel slut
+
+	Info<< "End\n" << endl;
+
+	TS_TOGGLE(true);
+	TS_PRINT();
+	return 0;
 }
 
 

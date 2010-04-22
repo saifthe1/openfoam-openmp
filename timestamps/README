@@ -8,6 +8,10 @@ EXE = $(FOAM_APPBIN)/dieselFoam ~/OpenFOAM/timestamp.cpp
 }}}
 Dvs, lägg till ~/OpenFOAM/timestamp.cpp
 
+Och inkludera sedan headern i dieselFoam.C. T.ex:
+#include "/home/zut/OpenFOAM/timestamp.hpp"
+
+ --- --- --- --- --- --- --- --- --- --- --- ---
 
 Användes genom att köra:
 TS_START("NAMN FÖR STYCKET");
