@@ -76,34 +76,20 @@ Inga tilldelningar alls. Vi måste undersöka vidare vad de olika operatorerna o
 
 Eftersom det andra stycket är beroende av det första, måste det hela utföras sekventiellt. Dock kan man med fördel dela upp beräkningarna som blir argument till `UEqn`'s konstruktor. Detta t.ex. med:
 {{{
-tmp<T> t1, t2;
-#sections
-{
-    #section
-        t1 = fvm::ddt(rho, U) + fvm::div(phi, U)
-    #section
-        t2 = rho*g
-    #seciton
-        t3 = turbulence->divDevRhoReff(U) == dieselSpray.momentumSource()
-}
-UEqn(t1 + t3 == t2);
-}}}
-
-Ovan fungerar om `operator==` är implementerat som `operator-`, vilket var resultatet av våra efterforskningar. Dock finns många `operator-` implementerade, och vi är osäkra på om dessa utför en matrissubtraktion. Ett annat, säkrare alternativ är:
-{{{
-fvVectorMatrix *t1;
-volVectorField *t2;	
+fvVectorMatrix *t11, *t12;
+volVectorField *t2;
 
 #pragma omp sections
 {
     #pragma omp section
-        t1 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));
-        *t1 += turbulence->divDevRhoReff(U);
+    {
+        t11 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));     // 0.95062 s
+        t2 = new volVectorField((rho*g + dieselSpray.momentumSource())()); // 0.17607 s
+    }
     #pragma omp section
-        t2 = new volVectorField((rho*g)());
-        *t2 += dieselSpray.momentumSource();
+        t12 = new fvVectorMatrix(turbulence->divDevRhoReff(U));            // 1.3779  s
 }
-fvVectorMatrix UEqn(*t1 == *t2);
+fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.2095  s
 }}}
 
 ----
