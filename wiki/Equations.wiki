@@ -96,9 +96,11 @@ fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.
 
 Stamps tagna under sekventiell körning
 
+{{{
 hashResult efter rensning av katalogerna (tidigare resultat)
 med Pers parallellisering  d41d8cd98f00b204e9800998ecf8427e
 med OpenFOAMs kod          d41d8cd98f00b204e9800998ecf8427e
+}}}
 ----
 
 ==YEqn.H==
