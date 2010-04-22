@@ -90,8 +90,11 @@ volVectorField *t2;
         t12 = new fvVectorMatrix(turbulence->divDevRhoReff(U));            // 1.3779  s
 }
 fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.2095  s
+
+// Totalt 2.7141 s
 }}}
 
+Stamps tagna under sekventiell körning
 ----
 
 ==YEqn.H==
