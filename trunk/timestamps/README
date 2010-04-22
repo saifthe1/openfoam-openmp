@@ -1,0 +1,21 @@
+Ska kopieras till ~/OpenFOAM
+
+Uppdatera sedan dieselFoam/Make/files till:
+{{{
+dieselFoam.C
+
+EXE = $(FOAM_APPBIN)/dieselFoam ~/OpenFOAM/timestamp.cpp
+}}}
+Dvs, lägg till ~/OpenFOAM/timestamp.cpp
+
+
+Användes genom att köra:
+TS_START("NAMN FÖR STYCKET");
+  ...
+TS_END("NAMNE FÖR STYCKET");
+
+stycken kan vara nestlade och överlappande, lek på. Dock måste man se till så att det körs lika många STARTs som ENDs för samma stycke.
+
+Togglas av och på genom TS_TOGGLE(true/false);
+
+Utskrift genom TS_PRINT();
