@@ -1,0 +1,4 @@
+dieselFoam.C
+timestamp.cpp
+
+EXE = $(FOAM_APPBIN)/dieselFoam
