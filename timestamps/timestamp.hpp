@@ -15,8 +15,9 @@ class ts_obj
 	public:
 		unsigned int stamps;
 		double time, lastStamp;
-		ts_obj() : stamps(0), time(0), lastStamp(0) {}
-		ts_obj(const double curTime) : stamps(0), time(0), lastStamp(curTime) {}
+		bool flip;
+		ts_obj() : stamps(0), time(0), lastStamp(0), flip(true) {}
+		ts_obj(const double curTime) : stamps(0), time(0), lastStamp(curTime), flip(true) {}
 };
 
 class ts

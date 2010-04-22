@@ -5,7 +5,13 @@ ts* ts::instance = NULL;
 void ts::start(const std::string& stamp_name)
 {
 	if(!ok) return;
-
+	
+	if(this->stamps[stamp_name].flip == false)
+	{
+		std::cerr << "You've used two start's in a row!" << std::endl;
+	}
+	this->stamps[stamp_name].flip = false;
+	
 	if(this->stamps.find(stamp_name) == this->stamps.end()) // Didn't find stamp_name
 	{
 		this->stamps[stamp_name] = ts_obj(::omp_get_wtime());
@@ -20,12 +26,18 @@ void ts::end(const std::string& stamp_name)
 {
 	if(!ok) return;
 
-	if(this->stamps.find(stamp_name) == this->stamps.end()) {
-		std::cerr << "start() måste komma före end() =)" << std::endl;
+	if(this->stamps.find(stamp_name) == this->stamps.end())
+	{
+		std::cerr << "Must start before you can end!" << std::endl;
 		throw new std::exception();
-		//throw new std::exception("start måste komma före end =)");
 	}
-
+	
+	if(this->stamps[stamp_name].flip == true)
+	{
+		std::cerr << "You've used two end's in a row!" << std::cerr;
+	}
+	this->stamps[stamp_name].flip = true;
+	
 	this->stamps[stamp_name].time += omp_get_wtime() - this->stamps[stamp_name].lastStamp;
 	this->stamps[stamp_name].stamps += 1;
 }
