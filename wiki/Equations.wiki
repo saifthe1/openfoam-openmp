@@ -98,14 +98,9 @@ volVectorField *t2;
 {
     #pragma omp section
         t1 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));
-    #pragma omp section
-        t2 = new volVectorField((rho*g)());
-}
-#pragma omp sections
-{
-    #pragma omp section
         *t1 += turbulence->divDevRhoReff(U);
     #pragma omp section
+        t2 = new volVectorField((rho*g)());
         *t2 += dieselSpray.momentumSource();
 }
 fvVectorMatrix UEqn(*t1 == *t2);
