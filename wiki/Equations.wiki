@@ -183,6 +183,25 @@ Körs i den yttre av `for`-looparna
 
 Det är endast `thermo.correct()` och `solve()` som anropas, kontrollera dessa.
 
+Parallellisering av `solve()`'s parametrar:
+
+{{{
+fvScalarMatrix *left1, *left2;
+volScalarField *right;
+
+#pragma omp sections
+{
+    #pragma omp section
+        left1 = new fvScalarMatrix(fvm::ddt(rho, h)());
+    #pragma omp section
+        left2 = new fvScalarMatrix(mvConvection->fvmDiv(phi, h) - fvm::laplacian(turbulence->alphaEff(), h));
+    #pragma omp section
+        right = new volScalarField(DpDt + dieselSpray.heatTransferSource());
+}
+
+solve( *left1 + *left2 == *right );
+}}}
+
 ----
 
 ==pEqn.H==
