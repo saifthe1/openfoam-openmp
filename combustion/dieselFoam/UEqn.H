@@ -1,4 +1,4 @@
-/*fvVectorMatrix *t11, *t12 = NULL;
+fvVectorMatrix *t11 = NULL, *t12 = NULL;
 volVectorField *t2 = NULL;
 
 #pragma omp sections
@@ -11,17 +11,15 @@ volVectorField *t2 = NULL;
     #pragma omp section
         t12 = new fvVectorMatrix(turbulence->divDevRhoReff(U));            // 1.2071  s
 }
-//får problem i dieselFoam så vi gör på det här sättet
-UEqn = new fvVectorMatrix(*t11 + *t12 == *t2);                                   // 0.13733 s
-*/
+fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.13733 s
 
 
 
 // Totalt 2.2374 s
 
 
-
-    UEqn = new fvVectorMatrix
+/*
+    fvVectorMatrix UEqn
     (
         fvm::ddt(rho, U)
       + fvm::div(phi, U)
@@ -31,8 +29,8 @@ UEqn = new fvVectorMatrix(*t11 + *t12 == *t2);                                  
       + dieselSpray.momentumSource()
     );
 
-
+*/
     if (momentumPredictor)
     {
-    		    solve(*UEqn == -fvc::grad(p));
+    		    solve(UEqn == -fvc::grad(p));
     }

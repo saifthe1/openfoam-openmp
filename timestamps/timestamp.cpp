@@ -8,7 +8,8 @@ void ts::start(const std::string& stamp_name)
 	
 	if(this->stamps[stamp_name].flip == false)
 	{
-		std::cerr << "You've used two start's in a row!" << std::endl;
+		std::cerr << "Can't start(" << stamp_name << "), since the last one hasn't ended yet!" << std::endl;
+		throw new std::exception();
 	}
 	this->stamps[stamp_name].flip = false;
 	
@@ -28,13 +29,14 @@ void ts::end(const std::string& stamp_name)
 
 	if(this->stamps.find(stamp_name) == this->stamps.end())
 	{
-		std::cerr << "Must start before you can end!" << std::endl;
+		std::cerr << "Must start(" << stamp_name << ") before you can end it!" << std::endl;
 		throw new std::exception();
 	}
 	
 	if(this->stamps[stamp_name].flip == true)
 	{
-		std::cerr << "You've used two end's in a row!" << std::cerr;
+		std::cerr << "Can't end(" << stamp_name << "), since it's not started!" << std::endl;
+		throw new std::exception();
 	}
 	this->stamps[stamp_name].flip = true;
 	
