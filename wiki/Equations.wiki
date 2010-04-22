@@ -83,15 +83,15 @@ volVectorField *t2;
 {
     #pragma omp section
     {
-        t11 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));     // 0.95062 s
-        t2 = new volVectorField((rho*g + dieselSpray.momentumSource())()); // 0.17607 s
+        t11 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));     // 0.78646 s
+        t2 = new volVectorField((rho*g + dieselSpray.momentumSource())()); // 0.10644 s
     }
     #pragma omp section
-        t12 = new fvVectorMatrix(turbulence->divDevRhoReff(U));            // 1.3779  s
+        t12 = new fvVectorMatrix(turbulence->divDevRhoReff(U));            // 1.2071  s
 }
-fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.2095  s
+fvVectorMatrix UEqn(*t11 + *t12 == *t2);                                   // 0.13733 s
 
-// Totalt 2.7141 s
+// Totalt 2.2374 s
 }}}
 
 Stamps tagna under sekventiell körning
