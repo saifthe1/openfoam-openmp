@@ -102,3 +102,35 @@ int main(int argc, char *argv[])
     return 0;
 }
 }}}
+
+{{{
+/**###################################################################
+/*# förslag för parallellisering av dieselFoam.C                     #
+/*####################################################################*/
+
+#pragma omp parallel
+{
+    while( runTime.run() )
+    {
+        #pragma omp critical 
+        {
+            //Evolving spray och annat 
+        } 
+
+        //yttre for-loopen kör 1 gång och inre 2 ggr för varje iteration
+        //av while-loopen 
+        #pragma omp for 
+        for () //yttre for-loopen
+        {
+            #include "YEqn.H"
+            #include "hEqn.H" 
+
+            #pragma omp for //inte bestämt om den här ska användas 
+            for () //inre for-loopen
+            {
+                #include "pEqn.H" 
+            } 
+        } 
+    } 
+}
+}}}
