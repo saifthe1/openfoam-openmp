@@ -46,7 +46,6 @@ Parallellisering av `for`-loopen m.h.a. är pågående
 #pragma omp parallel for      \  
   default(shared) private(i)  \  
   schedule(static,chunk)      \  
-  reduction(+:result)  
 }}}
 
 ----
@@ -76,7 +75,6 @@ if (momentumPredictor)
 Inga tilldelningar alls. Vi måste undersöka vidare vad de olika operatorerna och `solve()` gör, för att kunna förstå vart resultatet från ekvationen sparas.
 
 Eftersom det andra stycket är beroende av det första, måste det hela utföras sekventiellt. Dock kan man med fördel dela upp beräkningarna som blir argument till `UEqn`'s konstruktor. Detta t.ex. med:
-
 {{{
 tmp<T> t1, t2;
 #sections
@@ -89,6 +87,28 @@ tmp<T> t1, t2;
         t3 = turbulence->divDevRhoReff(U) == dieselSpray.momentumSource()
 }
 UEqn(t1 + t3 == t2);
+}}}
+
+Ovan fungerar om `operator==` är implementerat som `operator-`, vilket var resultatet av våra efterforskningar. Dock finns många `operator-` implementerade, och vi är osäkra på om dessa utför en matrissubtraktion. Ett annat, säkrare alternativ är:
+{{{
+fvVectorMatrix *t1;
+volVectorField *t2;	
+
+#pragma omp sections
+{
+    #pragma omp section
+        t1 = new fvVectorMatrix(fvm::ddt(rho, U) + fvm::div(phi, U));
+    #pragma omp section
+        t2 = new volVectorField((rho*g)());
+}
+#pragma omp sections
+{
+    #pragma omp section
+        *t1 += turbulence->divDevRhoReff(U);
+    #pragma omp section
+        *t2 += dieselSpray.momentumSource();
+}
+fvVectorMatrix UEqn(*t1 == *t2);
 }}}
 
 ----
