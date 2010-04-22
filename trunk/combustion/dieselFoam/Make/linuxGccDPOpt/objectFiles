@@ -1,3 +1,2 @@
 OBJECTS = \
-$(OBJECTS_DIR)/dieselFoam.o\
-$(OBJECTS_DIR)/timestamp.o
+$(OBJECTS_DIR)/dieselFoam.o

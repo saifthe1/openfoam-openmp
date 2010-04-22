@@ -1,4 +1,3 @@
 dieselFoam.C
-timestamp.cpp
 
-EXE = $(FOAM_APPBIN)/dieselFoam
+EXE = $(FOAM_APPBIN)/dieselFoam ~/OpenFOAM/timestamp.cpp

@@ -1,3 +1,2 @@
 SOURCE = \
-dieselFoam.C\
-timestamp.cpp
+dieselFoam.C
