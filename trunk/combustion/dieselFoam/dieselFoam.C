@@ -30,8 +30,8 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include "/home/zut/OpenFOAM/timestamp.hpp"
 #include <omp.h>
+#include "/home/zut/OpenFOAM/timestamp.hpp"
 
 #include "fvCFD.H"
 #include "hCombustionThermo.H"
@@ -47,11 +47,8 @@ Description
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
 int main(int argc, char *argv[])
 {
-	TS_TOGGLE(false);
-
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
@@ -64,98 +61,75 @@ int main(int argc, char *argv[])
     #include "compressibleCourantNo.H"
     #include "setInitialDeltaT.H"
 
-	// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     Info << "\nStarting time loop\n" << endl;
-	
-	// Deklarera variablerna som sätts i single-blocket
-	dictionary *piso 		= NULL;
-	int *nCorr				= NULL,
-		*nNonOrthCorr		= NULL,
-		*nOuterCorr			= NULL;
 
-	bool *momentumPredictor	= NULL,
-		 *transonic			= NULL;
+    while (runTime.run())
+    {
+        #include "readPISOControls.H"
+        #include "compressibleCourantNo.H"
+        #include "setDeltaT.H"
 
-	// I UEqn.H
-	fvVectorMatrix *UEqn	= NULL;
-	// I rhoEqn.H
-	volScalarField *Sevap	= NULL;
+        runTime++;
+        Info<< "Time = " << runTime.timeName() << nl << endl;
 
-	#pragma omp parallel
-	{
-		while (runTime.run())
-		{
-			#pragma omp single
-			{
-				#include "readPISOControls.H"
-				#include "compressibleCourantNo.H"
-				#include "setDeltaT.H"
+        Info << "Evolving Spray" << endl;
 
-				runTime++;
-				Info<< "Time = " << runTime.timeName() << nl << endl;
+        dieselSpray.evolve();
 
-				Info << "Evolving Spray" << endl;
+        Info << "Solving chemistry" << endl;
 
-				dieselSpray.evolve();
+        chemistry.solve
+        (
+            runTime.value() - runTime.deltaT().value(),
+            runTime.deltaT().value()
+        );
 
-				Info << "Solving chemistry" << endl;
+        // turbulent time scale
+        {
+            volScalarField tk =
+                Cmix*sqrt(turbulence->muEff()/rho/turbulence->epsilon());
+            volScalarField tc = chemistry.tc();
 
-				chemistry.solve
-				(
-					runTime.value() - runTime.deltaT().value(),
-					runTime.deltaT().value()
-				);
+            // Chalmers PaSR model
+            kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
+        }
 
-				// turbulent time scale
-				{
-					volScalarField tk =
-					Cmix*sqrt(turbulence->muEff()/rho/turbulence->epsilon());
-					volScalarField tc = chemistry.tc();
+        #include "rhoEqn.H"
+        #include "UEqn.H"
 
-					// Chalmers PaSR model
-					kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
-				}
+        for (label ocorr=1; ocorr <= nOuterCorr; ocorr++)
+        {
+            #include "YEqn.H"
+            #include "hEqn.H"
 
-				#include "rhoEqn.H"
-				#include "UEqn.H"
-			} // #pragma omp single
+            // --- PISO loop
+            for (int corr=1; corr<=nCorr; corr++)
+            {
+                #include "pEqn.H"
+            }
+        }
 
+        turbulence->correct();
 
-			for (label ocorr=1; ocorr <= *nOuterCorr; ocorr++)
-			{
-				#include "YEqn.H"
-				#include "hEqn.H"
+        #include "spraySummary.H"
 
-				// --- PISO loop
-				for (int corr=1; corr<=*nCorr; corr++)
-				{
-					#include "pEqn.H"
-				}
-			}
+        rho = thermo.rho();
 
-			turbulence->correct();
+        if (runTime.write())
+        {
+            chemistry.dQ()().write();
+        }
 
-			#include "spraySummary.H"
+        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
+            << nl << endl;
+    }
 
-			rho = thermo.rho();
+    Info<< "End\n" << endl;
 
-			if (runTime.write())
-			{
-				chemistry.dQ()().write();
-			}
-
-			Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
-			<< "  ClockTime = " << runTime.elapsedClockTime() << " s"
-			<< nl << endl;
-		}
-	}//pragma omp parallel slut
-
-	Info<< "End\n" << endl;
-
-	TS_TOGGLE(true);
-	TS_PRINT();
-	return 0;
+    return 0;
 }
 
 

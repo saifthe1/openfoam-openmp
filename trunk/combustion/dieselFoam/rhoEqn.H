@@ -30,7 +30,7 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-Sevap = new volScalarField
+volScalarField Sevap 
 (
     IOobject
     (
@@ -52,7 +52,7 @@ for (label i=0; i<Y.size(); i++)
 {
     if (dieselSprayArray[i])
     {
-        *Sevap += dieselSpray.evaporationSource(i);
+        Sevap += dieselSpray.evaporationSource(i);
     }
 }
 
@@ -63,8 +63,9 @@ for (label i=0; i<Y.size(); i++)
         fvm::ddt(rho)
       + fvc::div(phi)
       ==
-        *Sevap
+        Sevap
     );
+	/*
 	TS_END("rho > solve()");
 	
 	TS_START("rho > 1");
@@ -78,8 +79,7 @@ for (label i=0; i<Y.size(); i++)
 	TS_START("rho > 3");
     fvm::ddt(rho) + fvc::div(phi);
 	TS_END("rho > 3");
- 	 
-    
+ 	*/
 }
 
 // ************************************************************************* //

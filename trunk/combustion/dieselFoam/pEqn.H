@@ -5,19 +5,18 @@ rho = thermo.rho();
 TS_END("pEqn.H > thermo.rho()");
 
 TS_START("pEqn.H > 1.0/UEqn.A()");
-volScalarField rUA = 1.0/UEqn->A();
+volScalarField rUA = 1.0/UEqn.A();
 TS_END("pEqn.H > 1.0/UEqn.A()");
 
 TS_START("pEqn.H > rUA*UEqn.H()");
-U = rUA*UEqn->H();
+U = rUA*UEqn.H();
 TS_END("pEqn.H > rUA*UEqn.H()");
 
 TS_START("pEqn.H > if/else");
 
 
-if(*transonic)
+if(transonic)
 {
-std::cerr << "HEJSAN!!!!!!!!!           < if(transonic) >" << std::endl;
 	TS_START("pEqn.H > if > phi =");
     surfaceScalarField phid
     (
@@ -31,7 +30,7 @@ std::cerr << "HEJSAN!!!!!!!!!           < if(transonic) >" << std::endl;
 	TS_END("pEqn.H > if > phi =");
 
 	TS_START("pEqn.H > if > for");
-    for (int nonOrth=0; nonOrth<=*nNonOrthCorr; nonOrth++)
+    for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
     {
 		TS_START("pEqn.H > if > for > pEqn");
         fvScalarMatrix pEqn
@@ -40,7 +39,7 @@ std::cerr << "HEJSAN!!!!!!!!!           < if(transonic) >" << std::endl;
           + fvm::div(phid, p)
           - fvm::laplacian(rho*rUA, p)
          ==
-            *Sevap
+            Sevap
         );
 		TS_END("pEqn.H > if > for > pEqn");
 
@@ -49,7 +48,7 @@ std::cerr << "HEJSAN!!!!!!!!!           < if(transonic) >" << std::endl;
 		TS_END("pEqn.H > if > for > pEqn.solve()");
 
 		TS_START("pEqn.H > if > for > if");
-        if (nonOrth == *nNonOrthCorr)
+        if (nonOrth == nNonOrthCorr)
         {
             phi == pEqn.flux();
         }
@@ -69,8 +68,7 @@ else
 	TS_END("pEqn.H > else > phi =");
 
 	TS_START("pEqn.H > else > for");
-std::cerr << "HEJSAN!!!!!!!!!" << std::endl;
-    for (int nonOrth=0; nonOrth<=*nNonOrthCorr; nonOrth++)
+    for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
     {
 		TS_START("pEqn.H > else > for > pEqn");
         fvScalarMatrix pEqn
@@ -79,7 +77,7 @@ std::cerr << "HEJSAN!!!!!!!!!" << std::endl;
           + fvc::div(phi)
           - fvm::laplacian(rho*rUA, p)
          ==
-            *Sevap
+            Sevap
         );
 		TS_END("pEqn.H > else > for > pEqn");
 
@@ -88,16 +86,14 @@ std::cerr << "HEJSAN!!!!!!!!!" << std::endl;
 		TS_END("pEqn.H > else > for > pEqn.solve()");
 
 		TS_START("pEqn.H > else > for > if");
-        if (nonOrth == *nNonOrthCorr)
+        if (nonOrth == nNonOrthCorr)
         {
             phi += pEqn.flux();
         }
 		TS_END("pEqn.H > else > for > if");
     }
-std::cerr << "HEJSAN!!!!!!!!!" << std::endl;
 	TS_END("pEqn.H > else > for");
 }
-std::cerr << "HEJSAN!!!!!!!!!" << std::endl;
 TS_END("pEqn.H > if/else");
 
 TS_START("pEqn.H > rhoEqn.H");
