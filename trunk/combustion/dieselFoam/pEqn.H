@@ -1,4 +1,9 @@
 
+#if PRINTVECTOR & 1001000 > 0
+TS_TOGGLE(true);
+#else
+TS_TOGGLE(false);
+#endif
 
 TS_START("pEqn.H > thermo.rho()");
 rho = thermo.rho();
@@ -98,6 +103,13 @@ TS_END("pEqn.H > if/else");
 
 TS_START("pEqn.H > rhoEqn.H");
 #include "rhoEqn.H"
+// In case rho turned it off.
+#if PRINTVECTOR & 1001000 > 0
+TS_TOGGLE(true);
+#else
+TS_TOGGLE(false);
+#endif
+
 TS_END("pEqn.H > rhoEqn.H");
 
 TS_START("pEqn.H > compressibleContinuityErrs.H");
@@ -115,4 +127,5 @@ TS_END("pEqn.H > U.correctBoundaryConditions()");
 TS_START("pEqn.H > fvc::DDt()");
 DpDt = fvc::DDt(surfaceScalarField("phiU", phi/fvc::interpolate(rho)), p);
 TS_END("pEqn.H > fvc::DDt()");
+TS_TOGGLE(false);
 
