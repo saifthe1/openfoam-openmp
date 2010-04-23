@@ -33,6 +33,16 @@ Description
 #include <omp.h>
 #include "/home/zut/OpenFOAM/timestamp.hpp"
 
+#define PRINT_dieselFoam	0x31
+#define PRINT_hEqn			0x21
+#define PRINT_pEqn			0x11
+#define PRINT_rhoEqn		0x07
+#define PRINT_UEqn			0x05
+#define PRINT_YEqn			0x03
+#define PRINT_ALL			0x01
+
+#define PRINTVECTOR			PRINT_YEqn
+
 #include "fvCFD.H"
 #include "hCombustionThermo.H"
 #include "turbulenceModel.H"
@@ -46,9 +56,15 @@ Description
 #include "Switch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 int main(int argc, char *argv[])
 {
+	omp_set_num_threads(1);
+	#if PRINTVECTOR & PRINT_dieselFoam > 0
+	TS_TOGGLE(true);
+	#else
+	TS_TOGGLE(false);
+	#endif
+	
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
@@ -128,7 +144,10 @@ int main(int argc, char *argv[])
     }
 
     Info<< "End\n" << endl;
-
+	
+	TS_TOGGLE(true);
+	TS_PRINT();
+	
     return 0;
 }
 
