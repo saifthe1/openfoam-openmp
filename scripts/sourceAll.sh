@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ~/OpenFOAM/scripts/ninjaProf.sh
-. ~/OpenFOAM/scripts/preCompile.sh
-. ~/OpenFOAM/scripts/hashResult.sh
+. ~/Projects/Kandidat/scripts/ninjaProf.sh
+. ~/Projects/Kandidat/scripts/preCompile.sh
+. ~/Projects/Kandidat/scripts/hashResult.sh
 

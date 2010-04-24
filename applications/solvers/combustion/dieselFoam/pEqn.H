@@ -1,9 +1,8 @@
 
-#if PRINTVECTOR & 1001000 > 0
-TS_TOGGLE(true);
-#else
-TS_TOGGLE(false);
-#endif
+if((PRINTVECTOR & PRINT_pEqn) > 1)
+	TS_TOGGLE(true);
+else
+	TS_TOGGLE(false);
 
 TS_START("pEqn.H > thermo.rho()");
 rho = thermo.rho();
@@ -103,12 +102,12 @@ TS_END("pEqn.H > if/else");
 
 TS_START("pEqn.H > rhoEqn.H");
 #include "rhoEqn.H"
+
 // In case rho turned it off.
-#if PRINTVECTOR & 1001000 > 0
-TS_TOGGLE(true);
-#else
-TS_TOGGLE(false);
-#endif
+if((PRINTVECTOR & PRINT_pEqn) > 1)
+	TS_TOGGLE(true);
+else
+	TS_TOGGLE(false);
 
 TS_END("pEqn.H > rhoEqn.H");
 

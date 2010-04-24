@@ -2,5 +2,5 @@
 
 function hashResult()
 {
-	~/OpenFOAM/scripts/hashResult.pl
+	~/Projects/Kandidat/scripts/hashResult.pl
 }
