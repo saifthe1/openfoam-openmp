@@ -269,8 +269,9 @@ YEqn.H > for > if > solve():        (1.1055  + 1.111   + 1.1109)  / 3 = 1.1091  
 }}}
 Då a, b och c kan köras parallelt helt oberoende av varandra, borde man med parallellisering ha möjlighet att åstakomma en körtid på `MAX(a,b,c) + e = 0.2015 + 1.1091 = 1.3106` sekunder. Dock har man ju givetvis någon form av overhead vid parallellisering, så resultatet kan förväntas bli en något längre tid i den verkliga implementeringen.
 
-Under ideella förhållanden skulle den här parallelliseringen kunna ge `100*(1.4997 - 1.3106) / 1.4997 = 12.6092`% uppsnabbing, av just det här stycket.
+Under ideella förhållanden skulle den här parallelliseringen kunna ge `100*(1.4997 - 1.3106) / 1.4997 = 12.6092`% uppsnabbing, av just det här stycket. Då solve-stykcet i YEqn bidrar till ca 11% av den totala körtiden vid en kortare körning, innebär den här parallelliseringen en uppsnabbning på totalt 1.3% av den totala körtiden.
+
+Dock bör det märkas väl att YEqn är den enda delen som ökar mest vid en längre körning relativt andra delar, samt att filen innehåller en loop som med största sannolikhet går att parallellisera.
 
 == Resultat ==
 Vi får sämre resultat ju fler trådar vi aktiverar. Detta är mycket märkligt, specielt i det fallet med 4 trådar, eftersom det ju bara är maximalt 3 trådar som kan utföra det här stycket.
-
