@@ -1,9 +1,8 @@
 
-#if PRINTVECTOR & 1000100 > 0
-TS_TOGGLE(true);
-#else
-TS_TOGGLE(false);
-#endif
+if((PRINTVECTOR & PRINT_rhoEqn) > 1)
+	TS_TOGGLE(true);
+else
+	TS_TOGGLE(false);
 
 volScalarField Sevap 
 (
@@ -21,10 +20,10 @@ volScalarField Sevap
 
 List<bool> dieselSprayArray = dieselSpray.isLiquidFuel();
 
-#ifdef PARALLELIZE
-int chunk = Y.size() / omp_get_num_threads();
-#pragma omp parallel for default(shared) private(i) schedule(static, chunk)
-#endif
+//#ifdef PARALLELIZE
+//int chunk = Y.size() / omp_get_num_threads();
+//#pragma omp parallel for default(shared) private(i) schedule(static, chunk)
+//#endif
 for (label i=0; i<Y.size(); i++)
 {
     if (dieselSprayArray[i])
@@ -35,6 +34,7 @@ for (label i=0; i<Y.size(); i++)
 
 {
 	TS_START("rho > solve");
+/*
 	#ifdef PARALLELIZE
 	TS_START("rho > 1");
     fvm::ddt(rho);
@@ -48,6 +48,7 @@ for (label i=0; i<Y.size(); i++)
     fvm::ddt(rho) + fvc::div(phi);
 	TS_END("rho > 3");
 	#else
+*/
     solve
     (
         fvm::ddt(rho)
@@ -55,7 +56,7 @@ for (label i=0; i<Y.size(); i++)
       ==
         Sevap
     );
-	#endif
+//	#endif
 	TS_END("rho > solve");
 }
 

@@ -31,17 +31,20 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include <omp.h>
+//	#define PARALLELIZE 1
+
 #include "/home/zut/OpenFOAM/timestamp.hpp"
 
-#define PRINT_dieselFoam	0x31
-#define PRINT_hEqn			0x21
-#define PRINT_pEqn			0x11
-#define PRINT_rhoEqn		0x07
-#define PRINT_UEqn			0x05
-#define PRINT_YEqn			0x03
-#define PRINT_ALL			0x01
+	#define PRINT_dieselFoam	0x01	// 0000 0001
+	#define PRINT_hEqn			0x02	// 0000 0010
+	#define PRINT_pEqn			0x04	// 0000 0100
+	#define PRINT_rhoEqn		0x08	// 0000 1000
+	#define PRINT_UEqn			0x10	// 0001 0000
+	#define PRINT_YEqn			0x20	// 0010 0000
+	#define PRINT_ALL			0xFF	// 1111 1111
 
-#define PRINTVECTOR			PRINT_YEqn
+	const unsigned int PRINTVECTOR = PRINT_YEqn;
+
 
 #include "fvCFD.H"
 #include "hCombustionThermo.H"
@@ -58,12 +61,13 @@ Description
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 int main(int argc, char *argv[])
 {
-	omp_set_num_threads(1);
-	#if PRINTVECTOR & PRINT_dieselFoam > 0
-	TS_TOGGLE(true);
-	#else
 	TS_TOGGLE(false);
-	#endif
+	omp_set_num_threads(4);
+	
+	if((PRINTVECTOR & PRINT_dieselFoam) > 1)
+		TS_TOGGLE(true);
+	else 
+		TS_TOGGLE(false);
 	
     #include "setRootCase.H"
     #include "createTime.H"
@@ -80,9 +84,8 @@ int main(int argc, char *argv[])
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     Info << "\nStarting time loop\n" << endl;
-
-    while (runTime.run())
-    {
+	while(runTime.run())
+	{
         #include "readPISOControls.H"
         #include "compressibleCourantNo.H"
         #include "setDeltaT.H"
@@ -112,21 +115,29 @@ int main(int argc, char *argv[])
             kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
         }
 
+        Info << "\tSolving rho:" << endl;
         #include "rhoEqn.H"
+        Info << "\tSolving U:" << endl;
         #include "UEqn.H"
 
+        Info << "\tEntering loop:" << endl;
         for (label ocorr=1; ocorr <= nOuterCorr; ocorr++)
         {
+        	Info << "\t\tSolving Y:" << endl;
             #include "YEqn.H"
+        	Info << "\t\tSolving h:" << endl;
             #include "hEqn.H"
 
             // --- PISO loop
+        	Info << "\t\tEntering inner loop:" << endl;
             for (int corr=1; corr<=nCorr; corr++)
             {
+        		Info << "\t\t\tSolving p:" << endl;
                 #include "pEqn.H"
             }
         }
 
+        Info << "\tOutside of loops, doing other stuff:" << endl;
         turbulence->correct();
 
         #include "spraySummary.H"

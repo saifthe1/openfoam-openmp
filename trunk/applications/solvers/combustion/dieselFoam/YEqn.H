@@ -1,9 +1,8 @@
 
-#if PRINTVECTOR & 1000001 > 0
-TS_TOGGLE(true);
-#else
-TS_TOGGLE(false);
-#endif
+if((PRINTVECTOR & PRINT_YEqn) > 1)
+	TS_TOGGLE(true);
+else
+	TS_TOGGLE(false);
 
 tmp<fv::convectionScheme<scalar> > mvConvection
 (
@@ -24,7 +23,6 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	 * const unsigned int chunk = Y.size() / omp_get_num_threads();
 	 * #pragma omp for default(shared) private(i) schedule(static, chunk)
 	 **/
-	std::cerr << "\n\n Entering the loop..." << std::endl;
     for (label i=0; i< Y.size(); i++)
     {
         if (Y[i].name() != inertSpecie)
@@ -38,7 +36,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 							*left3 = NULL;
 			volScalarField *right = NULL;
 
-			#pragma omp parallel sections
+			#pragma omp parallel sections default(shared)
 			{
 				#pragma omp section
 				{
@@ -78,7 +76,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             );
 			#endif
 			TS_END("YEqn.H > for > if > solve");
-
+			
             Yi.max(0.0);
             Yt += Yi;
         }
