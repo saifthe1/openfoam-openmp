@@ -1,0 +1,65 @@
+#summary Försök till parallellism på tidsaxeln
+
+= Plot =
+
+Varje applikations-solver består oftast av flera ekvationer som körs sekventiellt. Dessa måste bibehålla sin ordning, och alla delar av ekvationerna måste som regel bibehålla sin sekventiella ordning. Dock verkar synkronisering av uträkningar för varje tidssteg inte ske vid uträkning, utan då man ökar tidsräknaren (m.h.a. `runTime.loop()` eller `runTime++`). Därför borde man framgångsrikt kunna låta varje tidpunkts uträkningar ske separat.
+
+= Kod =
+
+Den mycket triviala lösningen blir att byta ut huvudloopen, som ser ut som något i stil med:
+{{{
+while(runTime.run())
+{
+    runTime++;
+    ...
+}
+}}}
+Eller
+{{{
+while(runTime.loop())
+{
+    ...
+}
+}}}
+
+Mot 
+{{{
+const int startTime = runTime.startTime().value(),
+          endTime = runTime.endTime().value(),
+          deltaT = runTime.deltaT().value();
+#pragma omp parallel for default(shared) ordered schedule(static, 1)
+for(int bigLoopI = startTime; bigLoopI < endTime; bigLoopI += deltaT)
+{
+    #pragma omp ordered
+    {
+        runTime++;
+    }
+    ...
+}
+}}}
+
+Vissa solvers låter deltaT variera under en körning, i sådana fall får man ta till en mer avancerad lösning. Dock har vi hittils bara sett att deltaT minskar, varför man skulle kunna göra något i stil med:
+{{{
+while(runTime.run())
+{
+    const int startTime = runTime.startTime().value(),
+              endTime = runTime.endTime().value(),
+              deltaT = runTime.deltaT().value();
+    #pragma omp parallel for default(shared) ordered schedule(static, 1)
+    for(int bigLoopI = startTime; bigLoopI < endTime; bigLoopI += deltaT)
+    {
+        #pragma omp ordered
+        {
+            runTime++;
+        }
+    }
+}
+}}}
+Om man ser upp för avrundningsfel, borde det kunna vara en solid lösning.
+
+= Resultat =
+Tidtagning ger åter igen inga glada miner, det tar ca `5.8 s` för orginal orginalprogrammet att köra 100 iterationer, och ca `6.7 s` för den parallella versionen.
+
+Dock ser vi att den tuffar på för fullt på alla fyra kärnorna, så vi får se över hur synkroniseringen sker för att kunna gå vidare.
+
+[http://zut.nu/imagemaster/images/ea335883e4f7b.png]
