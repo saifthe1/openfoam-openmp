@@ -59,11 +59,14 @@ int main(int argc, char *argv[])
 	const int startTime = runTime.startTime().value(),
 			  endTime = runTime.endTime().value(),
 			  deltaT = runTime.deltaT().value();
-//	#pragma omp parallel for default(shared) ordered
+	#pragma omp parallel for default(shared) ordered schedule(static, 1)
 	for(int bigLoopI = startTime; bigLoopI < endTime; bigLoopI += deltaT)
     {
 		#pragma omp ordered
-		runTime++;
+		{
+			runTime++;
+		}
+
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         /* * Replaced 
@@ -75,11 +78,9 @@ int main(int argc, char *argv[])
 		scalar eqnResidual = 1, maxResidual = 0;
 		scalar convergenceCriterion = 0;
 
-		#pragma omp ordered
 		simple.readIfPresent("convergence", convergenceCriterion);
         /* * End of replacement * */
 
-		#pragma omp ordered
         p.storePrevIter();
 
         // Pressure-velocity SIMPLE corrector
@@ -91,17 +92,14 @@ int main(int argc, char *argv[])
 			// UEqn:
 			tmp<fvVectorMatrix> *UEqn = NULL;
 			
-			#pragma omp ordered
 			UEqn = new tmp<fvVectorMatrix> 
 			(
 				fvm::div(phi, U)
 			  + turbulence->divDevReff(U)
 			);
 
-			#pragma omp ordered
 			(*UEqn)().relax();
 
-			#pragma omp ordered
 			eqnResidual = solve
 			(
 				(*UEqn)() == -fvc::grad(p)
@@ -110,34 +108,28 @@ int main(int argc, char *argv[])
 			maxResidual = max(eqnResidual, maxResidual);
 
 			// pEqn:
-			#pragma omp ordered
 			p.boundaryField().updateCoeffs();
 
 			volScalarField AU = (*UEqn)().A();
 			U = (*UEqn)().H()/AU;
 			(*UEqn).clear();
 
-			#pragma omp ordered
 			phi = fvc::interpolate(U) & mesh.Sf();
-			#pragma omp ordered
 			adjustPhi(phi, U, p);
 
 
 			for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
 			{
 				fvScalarMatrix *pEqn = NULL;
-				#pragma omp ordered
 				pEqn = new fvScalarMatrix 
 				(
 					fvm::laplacian(1.0/AU, p) == fvc::div(phi)
 				);
 				
-				#pragma omp ordered
 				pEqn->setReference(pRefCell, pRefValue);
 
 				if (nonOrth == 0)
 				{
-					#pragma omp ordered 
 					{
 						eqnResidual = pEqn->solve().initialResidual();
 						maxResidual = max(eqnResidual, maxResidual);
@@ -145,30 +137,23 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					#pragma omp ordered 
 					pEqn->solve();
 				}
 
 				if (nonOrth == nNonOrthCorr)
 				{
-					#pragma omp ordered
 					phi -= pEqn->flux();
 				}
 			}
 
-			#pragma omp ordered
 			p.relax();
 
-			#pragma omp ordered 
 			U -= fvc::grad(p)/AU;
-			#pragma omp ordered
 			U.correctBoundaryConditions();
         }
 
-		#pragma omp ordered
         turbulence->correct();
 
-		#pragma omp ordered
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
