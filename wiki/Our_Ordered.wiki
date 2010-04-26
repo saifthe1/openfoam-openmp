@@ -1,0 +1,12 @@
+#summary Vårat aldeles eget order-direktiv
+
+= Eftersom #pragma omp ordered inte var till belåtenhet =
+
+{{{
+while(turn != bigLoopI);
+/*
+ Ordered block
+*/
+#pragma omp atomic
+turn = turn + deltaT;
+}}}
