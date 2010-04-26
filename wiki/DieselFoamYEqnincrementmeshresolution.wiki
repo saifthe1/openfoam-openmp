@@ -1,0 +1,78 @@
+{{{
+På wills dator finns ../dieselFoam/will.txt där jag sparat flera körningar av tre olika meshresolutions
+
+sammanfattningsvis ökar exekveringstiden i YEqn.H när man ökar
+mesh resolution, detta förvånar mig
+jämför:
+
+(41 41 100)
+What                                               Time               Count   
+YEqn.H > for > if > left1 & right................. 0.10045            1       
+YEqn.H > for > if > left2......................... 0.1054             1       
+YEqn.H > for > if > left3......................... 0.10898            1       
+YEqn.H > for > if > solve......................... 0                  0       
+YEqn.H > for > if > solve()....................... 0.28479            1       
+YEqn.H > for > if > left1 & right................. 0.23871            2       
+YEqn.H > for > if > left2......................... 0.22251            2       
+YEqn.H > for > if > left3......................... 0.22544            2       
+YEqn.H > for > if > solve......................... 0.42195            1       
+YEqn.H > for > if > solve()....................... 0.5624             2       
+YEqn.H > for > if > left1 & right................. 0.37727            3       
+YEqn.H > for > if > left2......................... 0.34956            3       
+YEqn.H > for > if > left3......................... 0.32836            3       
+YEqn.H > for > if > solve......................... 0.83801            2       
+YEqn.H > for > if > solve()....................... 0.67568            3       
+YEqn.H > for > if > left1 & right................. 0.49478            4       
+YEqn.H > for > if > left2......................... 0.48792            4       
+YEqn.H > for > if > left3......................... 0.4694             4       
+YEqn.H > for > if > solve......................... 1.09               3       
+YEqn.H > for > if > solve()....................... 0.78614            4       
+
+(51 51 100)
+YEqn.H > for > if > left1 & right................. 0.11427            1       
+YEqn.H > for > if > left2......................... 0.22742            1       
+YEqn.H > for > if > left3......................... 0.22566            1       
+YEqn.H > for > if > solve......................... 0                  0       
+YEqn.H > for > if > solve()....................... 0.75357            1       
+YEqn.H > for > if > left1 & right................. 0.25434            2       
+YEqn.H > for > if > left2......................... 0.43539            2       
+YEqn.H > for > if > left3......................... 0.42266            2       
+YEqn.H > for > if > solve......................... 1.004              1       
+YEqn.H > for > if > solve()....................... 1.2401             2       
+YEqn.H > for > if > left1 & right................. 0.47069            3       
+YEqn.H > for > if > left2......................... 0.64882            3       
+YEqn.H > for > if > left3......................... 0.6355             3       
+YEqn.H > for > if > solve......................... 1.7065             2       
+YEqn.H > for > if > solve()....................... 1.435              3       
+YEqn.H > for > if > left1 & right................. 0.61952            4       
+YEqn.H > for > if > left2......................... 0.85454            4       
+YEqn.H > for > if > left3......................... 0.84286            4       
+YEqn.H > for > if > solve......................... 2.1329             3       
+YEqn.H > for > if > solve()....................... 1.6302             4       
+
+(82 82 200) följande utskrift fås innan datorn dödar processen
+YEqn.H > for > if > left1 & right................. 7.7902             1       
+YEqn.H > for > if > left2......................... 5.0685             1       
+YEqn.H > for > if > left3......................... 4.9673             1       
+YEqn.H > for > if > solve......................... 0                  0       
+YEqn.H > for > if > solve()....................... 12.204             1       
+YEqn.H > for > if > left1 & right................. 35.301             2       
+YEqn.H > for > if > left2......................... 30.027             2       
+YEqn.H > for > if > left3......................... 29.918             2       
+YEqn.H > for > if > solve......................... 20.35              1       
+YEqn.H > for > if > solve()....................... 26.866             2       
+YEqn.H > for > if > left1 & right................. 56.003             3       
+YEqn.H > for > if > left2......................... 30.97              3       
+YEqn.H > for > if > left3......................... 50.672             3       
+YEqn.H > for > if > solve......................... 62.524             2       
+YEqn.H > for > if > solve()....................... 60.393             3       
+YEqn.H > for > if > left1 & right................. 83.251             4       
+YEqn.H > for > if > left2......................... 58.074             4       
+YEqn.H > for > if > left3......................... 77.121             4       
+YEqn.H > for > if > solve......................... 116.88             3       
+YEqn.H > for > if > solve()....................... 71.33              4       
+		Solving h:
+Dödad
+
+Jag får kolla på meshes igen...
+}}}
