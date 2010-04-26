@@ -58,7 +58,7 @@ while(runTime.run())
 Om man ser upp för avrundningsfel, borde det kunna vara en solid lösning.
 
 = Resultat =
-Tidtagning ger åter igen inga glada miner, det tar ca `5.8 s` för orginal orginalprogrammet att köra 100 iterationer, och ca `6.7 s` för den parallella versionen.
+Tidtagning ger åter igen inga glada miner, det tar ca `5.8 s` för orginal orginalprogrammet att köra 100 iterationer och ca `6.7 s` för den parallella versionen.
 
 Dock ser vi att den tuffar på för fullt på alla fyra kärnorna, så vi får se över hur synkroniseringen sker för att kunna gå vidare.
 
