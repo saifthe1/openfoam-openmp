@@ -23,6 +23,6 @@ ndelar = decomposeParOMP( case );
     for( int i = 0; i<n; i++)
     {
         //sätt igång solvern på en del av modellen
-        dieselFoam( ndelar[i] );
+        simpleFoam( ndelar[i] );
     }
 }}}
