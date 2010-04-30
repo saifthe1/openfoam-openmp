@@ -1,5 +1,5 @@
 
-if((PRINTVECTOR & PRINT_YEqn) > 1)
+if((PRINTVECTOR & PRINT_YEqn) > 0)
 	TS_TOGGLE(true);
 else
 	TS_TOGGLE(false);
@@ -31,9 +31,9 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 			
 			TS_START("YEqn.H > for > if > solve");
 			#ifdef PARALLELIZE
-			fvScalarMatrix  *left1 = NULL,
-							*left2 = NULL,
-							*left3 = NULL;
+			fvScalarMatrix *left1 = NULL,
+						   *left2 = NULL,
+						   *left3 = NULL;
 			volScalarField *right = NULL;
 
 			#pragma omp parallel sections default(shared)
@@ -63,7 +63,12 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 			solve( *left1 + *left2 - *left3 == *right, mesh.solver("Yi") );
 			TS_END("YEqn.H > for > if > solve()");
 			
+			delete left1;
+			delete left2;
+			delete left3;
+			delete right;
 			#else
+			TS_START("YEqn.H > for > if > solve()");
             solve
             (
                 fvm::ddt(rho, Yi)
@@ -74,6 +79,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
               + kappa*chemistry.RR(i),
                 mesh.solver("Yi")
             );
+			TS_END("YEqn.H > for > if > solve()");
 			#endif
 			TS_END("YEqn.H > for > if > solve");
 			

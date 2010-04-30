@@ -31,7 +31,7 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include <omp.h>
-#include "/home/zut/openfoam-openmp/ordered/order.hpp"
+#include "semaphore/semaphore.hpp"
 
 #include "fvCFD.H"
 #include "singlePhaseTransportModel.H"
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     #include "initContinuityErrs.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-	omp_set_num_threads(10);
+	omp_set_num_threads(4);
 	
 	// * * MOVED OUT OF LOOP * * //
 	dictionary simple = mesh.solutionDict().subDict("SIMPLE");
@@ -57,24 +57,40 @@ int main(int argc, char *argv[])
 		simple.lookupOrDefault<int>("nNonOrthogonalCorrectors", 0);
 	// * * * * * * * * * * * * * //
 
-	Info<< "\nStarting time loop\n" << endl;
+	Info<< "\nStarting time loop@" << runTime.startTime().value() << "\n" << endl;
+	
 	const unsigned int  startTime	= runTime.startTime().value(),
 						endTime		= runTime.endTime().value(),
 						deltaT		= runTime.deltaT().value();
 	unsigned int		bigLoopI;
-						
+	int 				c			= -1;
+				
 	#pragma omp parallel for default(shared) private(bigLoopI) ordered schedule(static, 1)
 	for(bigLoopI = startTime; bigLoopI < endTime; bigLoopI += deltaT)
     {
-		unsigned int sect = 0;
+		// I am the one is set True for the first one into the loop.
+		bool iato = false;
+		#pragma omp critical 
+		{
+			if(c == -1) {
+				iato = true;
+				c++;
+			}
+		}
+		if(!iato && c <= 2)
+		{
+			while(!iato && c <= 2) ;
 
-		ORDER_START(sect, bigLoopI);
+		}
+
+		tmp<fvVectorMatrix> *UEqn = NULL;
+		fvScalarMatrix *pEqn = NULL;
+
+		unsigned int sect = 0;
+		// Sect#0
 		runTime++;
-		ORDER_END(sect++);
 	
-		ORDER_START(sect, bigLoopI);
         Info<< "Time = " << runTime.timeName() << nl << endl;
-		ORDER_END(sect++);
 
         /* * Replaced 
 		 * #include "readSIMPLEControls.H"
@@ -85,15 +101,10 @@ int main(int argc, char *argv[])
 		scalar eqnResidual = 1, maxResidual = 0;
 		scalar convergenceCriterion = 0;
 
-		ORDER_START(sect, bigLoopI);
 		simple.readIfPresent("convergence", convergenceCriterion);
-		ORDER_END(sect++);
 	
         /* * End of replacement * */
-
-		ORDER_START(sect, bigLoopI);
         p.storePrevIter();
-		ORDER_END(sect++);
 	
 
         // Pressure-velocity SIMPLE corrector
@@ -103,118 +114,80 @@ int main(int argc, char *argv[])
              * #include "pEqn.H"
 			 */
 			// UEqn:
-			tmp<fvVectorMatrix> *UEqn = NULL;
 			
-			ORDER_START(sect, bigLoopI);
+			// Sect#3
 			UEqn = new tmp<fvVectorMatrix> 
 			(
 				fvm::div(phi, U)
 			  + turbulence->divDevReff(U)
 			);
-			ORDER_END(sect++);
-		
 
-			ORDER_START(sect, bigLoopI);
 			(*UEqn)().relax();
-			ORDER_END(sect++);
-		
 
-			ORDER_START(sect, bigLoopI);
 			eqnResidual = solve
 			(
 				(*UEqn)() == -fvc::grad(p)
 			).initialResidual();
-			ORDER_END(sect++);
-		
 
-			ORDER_START(sect, bigLoopI);
 			maxResidual = max(eqnResidual, maxResidual);
-			ORDER_END(sect++);
 		
 
 			// pEqn:
-			ORDER_START(sect, bigLoopI);
 			p.boundaryField().updateCoeffs();
-			ORDER_END(sect++);
 		
 
 			volScalarField AU = (*UEqn)().A();
 			U = (*UEqn)().H()/AU;
 			(*UEqn).clear();
 
-			ORDER_START(sect, bigLoopI);
 			phi = fvc::interpolate(U) & mesh.Sf();
-			ORDER_END(sect++);
-		
-			ORDER_START(sect, bigLoopI);
 			adjustPhi(phi, U, p);
-			ORDER_END(sect++);
-		
+			
+			if(c <= 2)
+			{
+				ORDER_END(0);
+			}
 
 			for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
 			{
-				fvScalarMatrix *pEqn = NULL;
-				ORDER_START(sect, bigLoopI);
 				pEqn = new fvScalarMatrix 
 				(
 					fvm::laplacian(1.0/AU, p) == fvc::div(phi)
 				);
-				ORDER_END(sect++);
-			
 
-				ORDER_START(sect, bigLoopI);
 				pEqn->setReference(pRefCell, pRefValue);
-				ORDER_END(sect++);
-			
 
 				if (nonOrth == 0)
 				{
-					ORDER_START(sect, bigLoopI);
 					eqnResidual = pEqn->solve().initialResidual();
 					maxResidual = max(eqnResidual, maxResidual);
-					ORDER_END(sect++);
-				
 				}
 				else
 				{
-					ORDER_START(sect, bigLoopI);
 					pEqn->solve();
-					ORDER_END(sect++);
-				
 				}
 
 				if (nonOrth == nNonOrthCorr)
 				{
-					ORDER_START(sect, bigLoopI);
+					ORDER_START((bigLoopI-startTime)/deltaT, nonOrth);
 					phi -= pEqn->flux();
-					ORDER_END(sect++);
-				
+					ORDER_START((bigLoopI-startTime)/deltaT, nonOrth);
 				}
+				delete pEqn;
 			}
 
-			ORDER_START(sect, bigLoopI);
+			ORDER_START(0, (bigLoopI-startTime)/deltaT);
+			if(c <=2) c++;
+			
 			p.relax();
-			ORDER_END(sect++);
-		
-
-			ORDER_START(sect, bigLoopI);
 			U -= fvc::grad(p)/AU;
-			ORDER_END(sect++);
-		
-			ORDER_START(sect, bigLoopI);
 			U.correctBoundaryConditions();
-			ORDER_END(sect++);
-		
+			delete UEqn;
         }
 
-		ORDER_START(sect, bigLoopI);
+		// Sect#5
         turbulence->correct();
-		ORDER_END(sect++);
-	
-
-		ORDER_START(sect, bigLoopI);
         runTime.write();
-		ORDER_END(sect++);
 	
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
@@ -228,9 +201,7 @@ int main(int argc, char *argv[])
 		{
 			Info<< "reached convergence criterion: " << convergenceCriterion << endl;
 			// If this happens, we're screwed. =)
-			ORDER_START(sect, bigLoopI);
 			runTime.writeAndEnd();
-			ORDER_END(sect++);
 			
 			Info<< "latestTime = " << runTime.timeName() << endl;
 		}

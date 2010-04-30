@@ -1,5 +1,5 @@
 
-if((PRINTVECTOR & PRINT_rhoEqn) > 1)
+if((PRINTVECTOR & PRINT_rhoEqn) > 0)
 	TS_TOGGLE(true);
 else
 	TS_TOGGLE(false);
@@ -24,6 +24,7 @@ List<bool> dieselSprayArray = dieselSpray.isLiquidFuel();
 //int chunk = Y.size() / omp_get_num_threads();
 //#pragma omp parallel for default(shared) private(i) schedule(static, chunk)
 //#endif
+TS_START("rho > for");
 for (label i=0; i<Y.size(); i++)
 {
     if (dieselSprayArray[i])
@@ -31,6 +32,7 @@ for (label i=0; i<Y.size(); i++)
         Sevap += dieselSpray.evaporationSource(i);
     }
 }
+TS_END("rho > for");
 
 {
 	TS_START("rho > solve");
@@ -49,6 +51,7 @@ for (label i=0; i<Y.size(); i++)
 	TS_END("rho > 3");
 	#else
 */
+	TS_START("rho > solve()");
     solve
     (
         fvm::ddt(rho)
@@ -56,6 +59,7 @@ for (label i=0; i<Y.size(); i++)
       ==
         Sevap
     );
+	TS_END("rho > solve()");
 //	#endif
 	TS_END("rho > solve");
 }
