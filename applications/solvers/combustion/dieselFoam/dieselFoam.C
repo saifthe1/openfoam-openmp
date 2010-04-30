@@ -43,7 +43,7 @@ Description
 	#define PRINT_YEqn			0x20	// 0010 0000
 	#define PRINT_ALL			0xFF	// 1111 1111
 
-	const unsigned int PRINTVECTOR = PRINT_YEqn;
+	const unsigned int PRINTVECTOR = PRINT_ALL & ~PRINT_pEqn & ~PRINT_rhoEqn;
 
 
 #include "fvCFD.H"
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 	TS_TOGGLE(false);
 	omp_set_num_threads(4);
 	
-	if((PRINTVECTOR & PRINT_dieselFoam) > 1)
+	if((PRINTVECTOR & PRINT_dieselFoam) > 0)
 		TS_TOGGLE(true);
 	else 
 		TS_TOGGLE(false);
@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     Info << "\nStarting time loop\n" << endl;
+
 	while(runTime.run())
 	{
         #include "readPISOControls.H"
@@ -115,37 +116,44 @@ int main(int argc, char *argv[])
             kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
         }
 
-        Info << "\tSolving rho:" << endl;
         #include "rhoEqn.H"
-        Info << "\tSolving U:" << endl;
+		if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+		TS_START("UEqn.H");
         #include "UEqn.H"
+		if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+		TS_END("UEqn.H");
 
-        Info << "\tEntering loop:" << endl;
         for (label ocorr=1; ocorr <= nOuterCorr; ocorr++)
         {
-        	Info << "\t\tSolving Y:" << endl;
+			TS_START("YEqn.H");
             #include "YEqn.H"
-        	Info << "\t\tSolving h:" << endl;
+			if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+			TS_END("YEqn.H");
+
+			TS_START("hEqn.H");
             #include "hEqn.H"
+			if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+			TS_END("hEqn.H");
 
             // --- PISO loop
-        	Info << "\t\tEntering inner loop:" << endl;
             for (int corr=1; corr<=nCorr; corr++)
             {
-        		Info << "\t\t\tSolving p:" << endl;
                 #include "pEqn.H"
             }
         }
 
-        Info << "\tOutside of loops, doing other stuff:" << endl;
+		std::cout << "turbulence->correct()" << std::endl;
         turbulence->correct();
 
         #include "spraySummary.H"
 
+		std::cout << "thermo.rho()" << std::endl;
         rho = thermo.rho();
 
+		std::cout << "runTime.write()" << std::endl;
         if (runTime.write())
         {
+			std::cout << "chemistry.dQ()().write();" << std::endl;
             chemistry.dQ()().write();
         }
 

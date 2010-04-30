@@ -66,7 +66,8 @@ void ts::printStamps()
 				<< std::setw(50) << "What" << " "
 				<< std::setw(18) << "Time" << " "
 				<< std::setw(8)  << "Count" << std::endl;
-	for(std::map<std::string, ts_obj>::iterator iter = stamps.begin(); iter != stamps.end(); ++iter) {
+	for(std::map<std::string, ts_obj>::iterator iter = stamps.begin(); iter != stamps.end(); ++iter)
+	{
 		std::cout 	<< std::setiosflags(std::ios::left)
 					<< std::setw(50) << std::setfill('.') << iter->first << " " << std::setfill(' ')
 					<< std::setw(18) << std::setprecision(5) << iter->second.time << " "

@@ -11,12 +11,22 @@ void order::start(const unsigned int section, const unsigned int waitFor)
 		// Add an order object
 		this->turns[section] = order_obj();
 	}
+
+	#pragma omp critical
+	std::cout << "Thread #" << omp_get_thread_num() << " Queues Sect#" << section << " [" << this->turns[section].turn << "/" << waitFor << "]" << std::endl;
+
 	while(this->turns[section].turn != waitFor) ;
+
+	#pragma omp critical
+	std::cout << "Thread #" << omp_get_thread_num() << " Enters Sect#" << section << std::endl;
 }
 
 void order::end(const unsigned int section)
 {
 	if(!ok) return;
+	
+	#pragma omp critical
+	std::cout << "Thread #" << omp_get_thread_num() << " Leaves Sect#" << section << std::endl;
 	
 	if(this->turns.find(section) == this->turns.end())
 	{
@@ -28,6 +38,7 @@ void order::end(const unsigned int section)
 	{
 		this->turns[section].turn++;
 	}
+	std::cout << "Thread #" << omp_get_thread_num() << " Leaves Sect#" << section << " with turn=" << this->turns[section].turn << std::endl;
 }
 
 void order::toggle()
