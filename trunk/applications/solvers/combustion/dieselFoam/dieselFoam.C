@@ -30,8 +30,10 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
+#include <iomanip>
+
 #include <omp.h>
-//	#define PARALLELIZE 1
+	#define PARALLELIZE 1
 
 #include "/home/zut/OpenFOAM/timestamp.hpp"
 
@@ -62,7 +64,7 @@ Description
 int main(int argc, char *argv[])
 {
 	TS_TOGGLE(false);
-	omp_set_num_threads(4);
+//	omp_set_num_threads(4);
 	
 	if((PRINTVECTOR & PRINT_dieselFoam) > 0)
 		TS_TOGGLE(true);
@@ -82,6 +84,9 @@ int main(int argc, char *argv[])
     #include "setInitialDeltaT.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+	double	startTime	= runTime.startTime().value(),
+			endTime		= runTime.endTime().value(),
+			deltaT		= runTime.deltaT().value();
 
     Info << "\nStarting time loop\n" << endl;
 
@@ -164,6 +169,15 @@ int main(int argc, char *argv[])
 
     Info<< "End\n" << endl;
 	
+	std::cout	<< "*** RESULTS ***" << std::endl
+				<< std::setiosflags(std::ios::left)
+				<< std::setw(13) << "startTime" << " = " << startTime << std::endl
+				<< std::setw(13) << "endTime" << " = " << endTime << std::endl
+				<< std::setw(13) << "deltaT" << " = " << deltaT << std::endl
+				<< std::setw(13) << "threads"  << " = " << getenv("OMP_NUM_THREADS") << std::endl
+				<< std::setw(13) << "meshsize" << " = " << mesh.cells().size() << std::endl 
+				<< std::endl;
+
 	TS_TOGGLE(true);
 	TS_PRINT();
 	
