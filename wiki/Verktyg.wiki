@@ -96,16 +96,24 @@ Det riktigt intressanta med dessa lösare är att vem som helst med kunskaper i 
 
 ==== 2.3.1.2 Verktyg ====
 
-Alla problem som innebär en modell i 2-D eller högre behöver minst ett datagenereringsverktyg, blockMesh. Det tar en fil med beskrivning av modellen och bygger den. Det gör blockMesh m.h.a. kärnmekanismer. Mer om detta i nästa avsnitt. Det finns fler verktyg av den här typen men de kommer inte nämnas i denna rapport. Lösarna själva använder verktyg och de kan variera från lösare till lösare. Ett verktyg som dock är svårt, om inte omöjligt, att klara sig utan är solve. Det är lite förvirrande att en lösare använder sig av ett verktyg som heter just solve. Ansträngning kommer göras för att undvika onödig förvirring. solve får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (hastighet och tryck t.ex.) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. Efter att en simulering har körts finns det naturligtvis verktyg för att analysera simuleringen. Det kanske viktigaste av dessa verktyg är paraFoam. Det visar modellen grafiskt och man kan via kontrollknappar stega sig igenom simuleringen. Om en del av simuleringen har gått snett är det relativt enkelt att se det i paraFoam. Det finns även alternativ för att kolla på en specifik variabel såsom tryck över hela modellen.
+Alla problem som innebär en modell i 2-D eller högre behöver minst ett datagenereringsverktyg, blockMesh. Det tar en fil med beskrivning av modellen och bygger den. Det gör blockMesh m.h.a. kärnmekanismer.
+Lösarna själva använder verktyg och de kan variera från lösare till lösare
+Efter att en simulering har körts finns det naturligtvis verktyg för att analysera simuleringen. Det kanske viktigaste av dessa verktyg är paraFoam. Det visar modellen grafiskt och man kan via kontrollknappar stega sig igenom simuleringen. Om en del av simuleringen har gått snett är det relativt enkelt att se det i paraFoam. Det finns även alternativ för att kolla på en specifik variabel såsom tryck över hela modellen.
 
-==== 2.3.1.3 Tutorials ====
+==== 2.3.1.3 Kärnmekanismer ====
 
-OpenFOAM-paketet innehåller en mängd exempelprogram. Detta är speciellt viktigt nu då hemsidan inte ännu är klar. Ett exempelprogram består av en mapp med exempelprogrammets namn och minst två undermappar. Dessa är mapparna constant och system. constant innehåller bland annat själva modellen i en undermapp kallad polymesh. system ska ha tre filer, controlDict, fvSolver och fvSchemes. I controlDict styr du den simulerade tiden. fvSolver ger dig möjlighet att förändra ekvationslösarnas tolerans. fvSchemes anger vilka ekvationslösare som ska användas.
+Om ändringar i lösare är enkelt så är ändringar i OpenFOAM kärnan desto svårare. Både lösare och verktyg använder sig av kärnmekanismer. Ett exempel på en kärnmekanism är solve. Den får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (hastighet och tryck t.ex.) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. 
+
+==== 2.3.1.4 Simuleringsfall ====
+
+Lösare och blockMeshverktyget behöver konfigurationsfiler för att uträtta något. Ett simuleringfall är då helt enkelt en mapp som innehåller dessa konfigurationsfiler. Mappen måste se ut på följande vis.
+
+ system ska ha tre filer, controlDict, fvSolver och fvSchemes. I controlDict styr du den simulerade tiden. fvSolver ger dig möjlighet att förändra ekvationslösarnas tolerans. fvSchemes anger vilka ekvationslösare som ska användas.
 Om exempelprogrammet kräver komplicerade kommandon kommer man finna ett script kallat Allrun. Man kan antingen köra det eller öppna det och lära sig hur exempelprogrammet ska köras.
 
 === 2.3.2 Hur det funkar ===
 
-För att ge en bättre förståelse skapar vi en egen *_lösare_*. Vi kallar den Elektrogarden. Det är en simulering av Elektrogården på Chalmers Campus Johanneberg. Modellen ska förutom rudimentär form på gården också simulera vind, regn och väggarnas ytbeläggning.2010-05-09 problem när jag la till trappor, tunnel och glasvägg; se utdelat dokument Elektrogården -Wuilbert Lopez 2010-05-09 20.28 
+För att ge en bättre förståelse skapar vi ett eget simuleringsfall. Vi kallar den Elektrogarden. Det är en simulering av Elektrogården på Chalmers Campus Johanneberg. Modellen ska förutom rudimentär form på gården också simulera vind, regn och väggarnas ytbeläggning.2010-05-09 problem när jag la till trappor, tunnel och glasvägg; se utdelat dokument Elektrogården -Wuilbert Lopez 2010-05-09 20.28 
 
 ==== 2.3.2.1 Preprocessing ====
 
