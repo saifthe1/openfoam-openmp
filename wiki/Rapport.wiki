@@ -1,6 +1,7 @@
 #summary Vår kära rapport
 #labels Rapport,Featured
 
+ * [Ordlista]
  # [Introduktion]
  # [Verktyg]
  # [Genomforande_och_resultat Genomförande och resultat]
