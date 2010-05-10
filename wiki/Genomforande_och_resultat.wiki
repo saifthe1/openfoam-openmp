@@ -41,7 +41,7 @@ Solvefunktionen anropas med argument i form av ekvationer. Dessa ekvationer bygg
 
 Efter att ha analyserat beräkningarna som gjordes för att skapa ekvationsdelarna fastslogs det att de inte modifierade några gemensamma variabler utan bara den variabel de var till för att räkna ut. Genom att flytta ut beräkningen av ekvationsdelarna ur solveanropet gick det att beräkna ett antal av delarna parallellt.
 
-* Orginalkod *
+* Kod *
 
 {{{
 solve
@@ -54,32 +54,6 @@ solve
   + kappa*chemistry.RR(i),                   // right2  /
     mesh.solver("Yi")
 );
-}}}
-
-* Parallelliserad kod *
-{{{
-fvScalarMatrix  *left1 = NULL,
-                *left2 = NULL,
-                *left3 = NULL;
-volScalarField *right = NULL;
-
-#pragma omp parallel sections default(shared)
-{
-    #pragma omp section
-    {
-        left1 = new fvScalarMatrix(fvm::ddt(rho, Yi)());
-        right = new volScalarField((dieselSpray.evaporationSource(i) + kappa*chemistry.RR(i))());
-     }
-    #pragma omp section
-    {
-        left2 = new fvScalarMatrix(mvConvection->fvmDiv(phi, Yi));
-    }
-    #pragma omp section
-    {
-        left3 = new fvScalarMatrix(fvm::laplacian(turbulence->muEff(), Yi));
-    }
-}
-solve( *left1 + *left2 - *left3 == *right, mesh.solver("Yi") );
 }}}
 
 ==== 3.1.2.2 Parallellisering längsmed tidsaxeln ====
