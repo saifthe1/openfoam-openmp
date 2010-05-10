@@ -34,9 +34,9 @@ En av de viktigaste egenskaperna med OpenMP är att dess möjlighet att tillhand
 
 == 2.3 OpenFOAM ==
 
-OpenFOAM är ett ramverk för att konstruera och definiera simuleringsmiljöer, och tillhandahåller verktyg för att skapa representationer av den fysiska miljön programmet skall köras i och för att visualisera utdata.  Dessutom ges goda möjligheter att representera en fysikalisk eller kemisk process genom att skapa applikationslösare.
+OpenFOAM är ett ramverk för att konstruera och definiera simuleringsmiljöer, och tillhandahåller verktyg för att skapa representationer av den fysiska miljön programmet skall köras i och för att visualisera utdata.  Dessutom ges goda möjligheter att representera en fysikalisk eller kemisk process genom att skapa s.k. lösare.
 
-En fysikalisk eller kemisk process kan givetvis te sig under många olika förhållanden och i många olika miljöer. Därför kan man med OpenFOAM lätt konfigurera många olika saker inför en simulation. Förutom att definiera den fysiska miljön och vad som påverkar den, kan man även finjustera med hur stor precision beräkningar under simulationen skall utföras.
+En fysikalisk eller kemisk process kan givetvis ske under många olika förhållanden och i många olika miljöer. Därför kan man med OpenFOAM lätt konfigurera flera olika saker inför en simulation. Förutom att definiera den fysiska miljön och vad som påverkar den, kan man även finjustera med hur stor precision beräkningar under simulationen skall utföras.
  
 === 2.3.1 Programstruktur ===
 
@@ -46,14 +46,13 @@ En fysikalisk eller kemisk process kan givetvis te sig under många olika förh�
 
 Figuren ovan visar den verkliga arbetsgången för en simulering.
 
-I följande text visas skillnad på kärnan av programmet och lösare som använder sig av kärnan i programmet. Lösare är program som löser specifika problem inom flödesdynamiken. Dessa använder sig av utilities, verktyg som har hand om datamanipulering och algebraiska beräkningar. Således uppstår definitionen att kärnan av programmet är verktyg som lösare använder sig av. 
+I följande text visas skillnad på kärnan av programmet och lösare som använder sig av kärnan i programmet. Lösare är program som löser specifika problem inom flödesdynamiken. Dessa använder sig av verktyg som har hand om datamanipulering och algebraiska beräkningar. Vidare har man kärnmekanismer och simuleringsfall. Dessa fyra saker utgör de viktigaste aspekterna av OpenFOAM. 
 
 ==== 2.3.1.1 Lösare ====
 
 Det finns en uppsjö av lösare som kommer med i programvaran. Denna rapport kommer behandla tre stycken lösare simpleFoam, dieselFoam och pisoFoam. Källkoden för dessa tre ges i appendix.
 
-Under exekveringen av en lösare skriver den ut viktiga resultat och tidsmarkörer. 
-För att göra en lösare behöver man egentligen bara en algoritm. Därefter behöver man veta vilka delar av algoritmen motsvarar vilka delar i OpenFOAM. Ett exempel är simpleFoam. Nedan följer ett utdrag från openfoamwiki.net http://openfoamwiki.net/index.php/The_SIMPLE_algorithm_in_OpenFOAM -Wuilbert Lopez 2010-05-10 00.50 som förklarar vad simple algoritmen gör.  översätta? -Wuilbert Lopez 2010-05-10 00.51  Jämför den med den riktiga koden som följer direkt efter.
+För att göra en lösare behöver man egentligen bara en algoritm. Därefter behöver man veta vilka delar av algoritmen motsvarar vilka delar i OpenFOAM. Vanligtvis kräver en överföring från algoritm till kod avsevärt mycker mer ansträngning än så här. simpleFoam tas som exempel för att illustrera förfarandet. Nedan följer ett utdrag från openfoamwiki.net http://openfoamwiki.net/index.php/The_SIMPLE_algorithm_in_OpenFOAM -Wuilbert Lopez 2010-05-10 00.50 som förklarar vad simple algoritmen gör.  översätta? -Wuilbert Lopez 2010-05-10 00.51  Jämför den med den riktiga koden som följer direkt efter.
 
 The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple the Navier-Stokes equations with an iterative procedure, which can be summed up as follows:
 
@@ -67,14 +66,37 @@ The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple
    # Repeat till convergence.
 
 The steps 4 and 5 can be repeated for a prescribed number of time to correct for non-orthogonality.
-infoga simpleFoam C-kod -Wuilbert Lopez 2010-05-10 00.51 
+
+    while (runTime.loop())
+    {
+
+
+        #include "readSIMPLEControls.H"
+        #include "initConvergenceCheck.H"
+
+        p.storePrevIter();
+
+        // Pressure-velocity SIMPLE corrector
+        {
+            #include "UEqn.H"
+            #include "pEqn.H"
+        }
+
+        turbulence->correct();
+
+        runTime.write();
+
+
+        #include "convergenceCheck.H"
+    }
+
 passa på att förklarar tidsloopen, lägg upp den för Per i sektion 3 =) -Wuilbert Lopez 2010-05-10 01.05 
 
 Det riktigt intressanta med dessa lösare är att vem som helst med kunskaper i flödesdynamik ska kunna sätta ihop en egen lösare. Grundkunskaper i programmering ska vara det enda kravet för att klara av detta. Jämför med andra program eller projekt där expert kunskaper kan behövas för att få en funktion eller modul att fungera och använda sig av tidigare verktyg.
 
 ==== 2.3.1.2 Verktyg ====
 
-Alla problem som innebär en modell i 3-D av något slag behöver minst ett verktyg, blockMesh. Det tar en fil med beskrivning av modellen och bygger den. Det finns fler verktyg av den här typen men de kommer inte nämnas annat än för att belysa någon specifik punkt. Lösarna själva använder verktyg och de kan variera från lösare till lösare. Ett verktyg som dock är svårt, om inte omöjligt, att klara sig utan är solve. Det är lite förvirrande att en lösare använder sig av ett verktyg som heter just solve. Ansträngning kommer göras för att undvika onödig förvirring. solve får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (hastighet och tryck t.ex.) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. Efter att en simulering har körts finns det naturligtvis verktyg för att analysera simuleringen. Det kanske viktigaste av dessa verktyg är paraFoam. Det visar modellen grafiskt och man kan via kontrollknappar stega sig igenom simuleringen. Om en del av simuleringen har gått snett är det relativt enkelt att se det i paraFoam. Det finns även alternativ för att kolla på en specifik variabel såsom tryck över hela modellen.
+Alla problem som innebär en modell i 2-D eller högre behöver minst ett datagenereringsverktyg, blockMesh. Det tar en fil med beskrivning av modellen och bygger den. Det gör blockMesh m.h.a. kärnmekanismer. Mer om detta i nästa avsnitt. Det finns fler verktyg av den här typen men de kommer inte nämnas i denna rapport. Lösarna själva använder verktyg och de kan variera från lösare till lösare. Ett verktyg som dock är svårt, om inte omöjligt, att klara sig utan är solve. Det är lite förvirrande att en lösare använder sig av ett verktyg som heter just solve. Ansträngning kommer göras för att undvika onödig förvirring. solve får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (hastighet och tryck t.ex.) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. Efter att en simulering har körts finns det naturligtvis verktyg för att analysera simuleringen. Det kanske viktigaste av dessa verktyg är paraFoam. Det visar modellen grafiskt och man kan via kontrollknappar stega sig igenom simuleringen. Om en del av simuleringen har gått snett är det relativt enkelt att se det i paraFoam. Det finns även alternativ för att kolla på en specifik variabel såsom tryck över hela modellen.
 
 ==== 2.3.1.3 Tutorials ====
 
