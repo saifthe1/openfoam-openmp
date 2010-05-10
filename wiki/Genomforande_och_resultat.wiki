@@ -1,0 +1,63 @@
+#summary 3. Genomförande och resultat
+
+= 3. Genomförande och resultat = 
+
+Det praktiska arbetet har nästan uteslutande berört OpenFOAM och det är endast detta som tas upp i rapporten.
+
+== 3.1 Parallellisering av OpenFOAM ==
+
+OpenFOAM är mycket modulärt och parallellisering i de olika delarna medför väldigt skilda resultat. En bedömning av hur förändringarna i koden påverkar projektet i helhet behövs för flertalet aspekter för att avgöra vilken del som är lämpligast att parallellisera.
+
+OpenFOAMs applikationslösare väldigt anpassade för att författare av dessa inte ska behöva några vidare programmeringskunskaper för att skriva dem hänvisa till Sektion 2.3? -Wuilbert Lopez 2010-05-10 00.55 . Således medför förändringar i dessa möjligen besvär för eventuella fysiker, matematiker eller kemister som uppdaterar applikationslösare. Dock kan det diskuteras huruvida ett fysikalisk beskrivning av ett flöde behöver "patchas".
+
+Att parallellisera en applikationslösare ger endast effekt för just den applikationslösaren, och möjligen några ytterligare som brukar dennes ekvationer. Effekten av parallellisering i en applikationslösare blir hur som helst begränsad till mycket få applikationer. Om en viktig del av OpenFOAMs kärna däremot skulle parallelliseras skulle en uppsnabbning av samtliga applikationslösare uppnås.
+
+Kontinuetitsproblem kan uppstå vid framtagandet av en parallelkiserad version av OpenFOAMs kärna. Nya versioner av OpenFOAM är bakåtkompatibla på nästan alla plan(1). Därför skulle inte dessa problem uppstå vid parallellisering av en applikationssolver. OpenCFD uppdaterar ju inte fysikaliska omständigheter, utan lägger till funktionalitet i kärnan.Tappar bort min argumenation lite här =) Återkommer. -Per Hallgren 5/5/10 10:33 AM 
+(1) http://www.openfoam.com/docs/release-notes.php
+
+För projektets ändamål valdes att parallellisera applikationslösaren dieselFoam. Detta dels då att parallellisera en applikationslösare är mindre komplex än att parallellisera en algoritm i kärnan, som t.ex. gauss-elimination, matrismultiplikation, etc.. Men framför allt valdes applikationslösare för att det tar betydligt kortare tid - ca 30 sekunder istället för ett par timmar - att kompilera en applikationslösare, än att kompilera om kärnan.
+
+=== 3.1.1 Analys === 
+note to self, jag vill ha en punktlista här (nånstans) där vi listar alla möjliga sätt vi kunde tänka oss parallellisera, sedan kan texten fortsätta mer eller mindre som den är -Wuilbert Lopez 2010-05-10 01.01 För att bedömma vilken form av parallellisering som skulle ger mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en applikationslösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
+
+
+==== 3.1.1.1 GProf ====
+GProf är något av industristandard när det kommer till profilering. Verktyger är enkelt, snabbt och har väldigt många inställningar för att finjustera nogrannhet. Dock utför det inte alls det arbete som behövs för att utföra parallellisering i en applikationslösare. GProf mäter funktionsanrop och hur lång tid programmet spenderar på att utföra funktionen. Att parallellisera en applikationslösare innebär att parallellisera main()-funktionen. main() anropas en gång och upptar 100% av körningstiden, vilket är otroligt irrelevant.
+
+==== 3.1.1.2 Rad-för-rad timestamps ====
+Istället användes en mer brute-force metod, med tidtagning varje instruktion i main()-funktionen.
+
+=== 3.1.2 Genomförande ===
+==== 3.1.2.1 Uppdelning av solve()'s parametrar ====
+secitons
+
+ihopparning, slowest section rules
+==== 3.1.2.2 Parallellisering längsmed tidsaxeln ====
+Varje simulation i OpenFOAM utför ett visst antal tidsiterationer, vilket ger ett visst potential till parallellism. För att testa detta tillvägagångssätt användes simpleFoam, vilket är en mycket minder komplex applikationslösare än dieselFoam. Dock visade sig resultaten långt ifrån tillräckkliga eftersom endast små delar i början och slutet av varje tidsiteration i den algoritm som simpleFoam (SIMPLE) använder kunde parallelliseras. Tidigt i varje iteration behöver man läsa från en variabel som skrivs till i slutet av föregående iteration. Det finns dock ett möjligt potential; om varje instruktion i en algoritm endast påverkar några nästkommande instruktioner.
+behöver lägga in pseudokod här för att beskriva vad som händer när vi lägger till omp ordered och för att beskriva hur tiden fungerar i OpenFOAM, hm... det får jag lägga in i Sektion 2.3 istället -Wuilbert Lopez 2010-05-10 01.03 
+
+== 3.2 Resultat ==
+
+Resultaten härrör från parallellisering i dieselFoam genom uppdelning av solve()'s parametrar.
+
+=== 3.2.1 Kodbriefing ===
+`[Kod från wiki]`
+
+Då vi varit tvugna att i viss mån ändra på algoritmen för att uppnå parallellism, kan inte en körning med en ensam tråd i den parallelliserade version anses vara densamma som en körning med orginalkoden. Därav brukas förkompilationsdirektiv för att det ska vara lätt att växla mellan orginalkoden och den parallelliserade versionen samtidigt som man får korrekta tidsuppmätningar.
+
+=== 3.2.2 Miljöbeskrivning ===
+Tester har gjorts med det färdiga Aachenbomb-exemplet som följer med OpenFOAM-distributionen.
+==== 3.2.2.1 Tutorialbeskrivning ====
+För att ekvationerna som de olika anropen till solve() löser ska ta en icke försumbar tid att ställa upp, måste problemet man försöker simulera vara tillräckligt stort. Samtidigt för inte körningen ta allt för lång tid för att testen skulle hinna bli behandlade i projektet.
+
+För att öka problemstorleken har modellens storlek ökats, genom konfigurationsfilen constant/polyMesh/blockMeshDict. Dessutom har noggrannheten för varje ekvation ökats, genom konfigurationsfilen system/fvSolution. Därtill har man alltså minskat antalet tidsiterationer genom system/controlDict.
+==== 3.2.2.1 Hårdvaruspecifikation ====
+Beskrivning av hårdvara vi kör testerna på:
+
+Intel core2 quad, GB, ubuntu 10.04.
+
+=== 3.2.3 Redovisning ===
+Redovisning av testkörningarna, tabeller. Inget mer behövs?
+
+=== 3.2.4 Resultatsammanfattning ===
+http://code.google.com/p/openfoam-openmp/wiki/YEqn
