@@ -1,5 +1,5 @@
 #summary Förklaring och definiering av termer som används i projektet
-#labels Rapport
+#labels Rapport,Featured
 
 = Ordlista =
 
