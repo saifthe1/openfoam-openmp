@@ -15,8 +15,6 @@ Sedan datorn uppfanns har dess utveckling som bekant följt Moores Lag: ”Antal
 
 I många år har denna ökning hållit i sig och datorernas hastighet har ökat exponentiellt. I början på 2000-talet har denna trend stött på ett hinder, istället för att utrymmet på kiselchipet hindrar prestandaökning är det värmeutvecklingen från komponenterna som stoppar utvecklingen. Detta är ett problem som varit svårt att avhjälpa med konventionella tekniker och man har därför fått ta fram nya lösningar.
 
-=== 1.1.1 Multipla processorer ===
-
 Istället för att öka antalet transistorer i varje processor har många tillverkare valt att sätta flera processorer i samma dator. Dessa delar sedan på minne och andra resurser i datorn men kan arbeta med varsin uppgift parallellt.
 
 I servrar och stordatorer för forskning har detta realiserats genom flera helt självständiga processorer med egna cacheminnen och kommunikationsvägar till resten av datorn. I persondatorer är det vanligaste istället att man istället har flera processorkärnor, den del av processorn som utför själva beräkningarna, som delar på cacheminne och kommunikationsmöjligheter.
