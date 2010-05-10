@@ -1,5 +1,5 @@
 #summary Vår kära rapport
-#labels Rapport
+#labels Rapport,Featured
 
  # [Introduktion]
  # [Verktyg]
