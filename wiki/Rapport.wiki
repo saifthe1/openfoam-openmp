@@ -1,8 +1,10 @@
 #summary Vår kära rapport
 #labels Rapport,Featured
 
- * [Ordlista]
- * [Ordlista]
+= Pretext =
+[Ordlista]
+
+= Content =
  # [Introduktion]
  # [Verktyg]
  # [Genomforande_och_resultat Genomförande och resultat]
