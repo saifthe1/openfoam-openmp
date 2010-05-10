@@ -40,7 +40,8 @@ En fysikalisk eller kemisk process kan givetvis te sig under många olika förh�
  
 === 2.3.1 Programstruktur ===
 
-[http://openfoam.com/docs/user/img/user0x.png] (`http://openfoam.com/docs/user/img/user0x.png`)
+[http://openfoam.com/docs/user/img/user0x.png]
+(`http://openfoam.com/docs/user/img/user0x.png`)
 
 Figuren ovan visar den verkliga arbetsgången för en simulering.
 
