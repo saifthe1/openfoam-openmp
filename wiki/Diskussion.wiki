@@ -12,9 +12,9 @@ Vid en eventuell parallellisering av kärnan hade den lägre overheaden kunnat g
 ====4.2.2.1 Benchmarks====
 ====4.2.2.2 Resultatverifiering====
 ===4.2.3 Collaborative work in parallelized programming===
-Funkar det bättre/sämmre att programmera flera på samma projekt? Hur pass mycket mer "ömtålig" blir koden?
+Funkar det bättre/sämre att programmera flera på samma projekt? Hur pass mycket mer "ömtålig" blir koden?
 ===4.2.4 Approach efter hårdvara?===
-Cahcemissar är mindre kritiskta i vissa system, osv.
+Cahcemissar är mindre kritiska i vissa system, osv.
 ==4.3 OpenFOAM==
 OpenFOAM har en ovanlig kodstruktur, särskilt på lösarnivå eftersom den är tänkt för fysiker och inte programmerare. Detta gör att koden är svår att analysera eftersom den bryter mot många grundläggande principer för hur programkod bör skrivas.
 
