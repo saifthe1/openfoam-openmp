@@ -16,4 +16,4 @@ Funkar det bättre/sämmre att programmera flera på samma projekt? Hur pass myc
 ===4.2.4 Approach efter hårdvara?===
 Cahcemissar är mindre kritiskta i vissa system, osv.
 ==4.3 OpenFOAM==
-Lämplighet för vårat projekt
+OpenFOAM har en ovanlig kodstruktur, särskilt på lösarnivå
