@@ -29,9 +29,10 @@ Istället användes en mer brute-force metod, med tidtagning varje instruktion i
 
 === 3.1.2 Genomförande ===
 ==== 3.1.2.1 Uppdelning av solve()'s parametrar ====
-secitons
+Solvefunktionen anropas med argument i form av ekvationer. Dessa ekvationer byggs upp av mindre delar som beräknas var för sig. I originalimplementationen beräknades ekvationsdelarna inom solvefunktionens anrop, detta visade sig vara en möjlighet till parallellisering.
 
-ihopparning, slowest section rules
+Efter att ha analyserat beräkningarna som gjordes för att skapa ekvationsdelarna fastslogs det att de inte modifierade några gemensamma variabler utan bara den variabel de var till för att räkna ut. Genom att flytta ut beräkningen av ekvationsdelarna ur solveanropet gick det att beräkna ett antal av delarna parallellt.
+
 ==== 3.1.2.2 Parallellisering längsmed tidsaxeln ====
 Varje simulation i OpenFOAM utför ett visst antal tidsiterationer, vilket ger ett visst potential till parallellism. För att testa detta tillvägagångssätt användes simpleFoam, vilket är en mycket minder komplex applikationslösare än dieselFoam. Dock visade sig resultaten långt ifrån tillräckkliga eftersom endast små delar i början och slutet av varje tidsiteration i den algoritm som simpleFoam (SIMPLE) använder kunde parallelliseras. Tidigt i varje iteration behöver man läsa från en variabel som skrivs till i slutet av föregående iteration. Det finns dock ett möjligt potential; om varje instruktion i en algoritm endast påverkar några nästkommande instruktioner.
 behöver lägga in pseudokod här för att beskriva vad som händer när vi lägger till omp ordered och för att beskriva hur tiden fungerar i OpenFOAM, hm... det får jag lägga in i Sektion 2.3 istället -Wuilbert Lopez 2010-05-10 01.03 
