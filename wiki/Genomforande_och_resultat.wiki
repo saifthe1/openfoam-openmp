@@ -46,13 +46,12 @@ Efter att ha analyserat beräkningarna som gjordes för att skapa ekvationsdelar
 {{{
 solve
 (
-    fvm::ddt(rho, Yi)                        // left1   \
-  + mvConvection->fvmDiv(phi, Yi)            // left2    |--- left
-  - fvm::laplacian(turbulence->muEff(), Yi)  // left3   /
-  ==
-    dieselSpray.evaporationSource(i)         // right1  \___  right
-  + kappa*chemistry.RR(i),                   // right2  /
-    mesh.solver("Yi")
+    fvm::ddt(rho, h)                            // left1 \
+  + mvConvection->fvmDiv(phi, h)                // left2  | ------ Vänsterledet
+  - fvm::laplacian(turbulence->alphaEff(), h)   // left3 /
+ ==
+   DpDt                                         // right1 \_______ Högerledet
+ + dieselSpray.heatTransferSource()             // right2 /
 );
 }}}
 
