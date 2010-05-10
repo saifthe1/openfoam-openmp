@@ -2,6 +2,7 @@
 #labels Rapport,Featured
 
  * [Ordlista]
+ * [Ordlista]
  # [Introduktion]
  # [Verktyg]
  # [Genomforande_och_resultat Genomförande och resultat]
