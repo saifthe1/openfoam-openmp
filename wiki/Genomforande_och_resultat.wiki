@@ -1,4 +1,5 @@
 #summary 3. Genomförande och resultat
+#labels Rapport,Featured
 
 = 3. Genomförande och resultat = 
 
@@ -42,9 +43,28 @@ Efter att ha analyserat beräkningarna som gjordes för att skapa ekvationsdelar
 
 ==== 3.1.2.2 Parallellisering längsmed tidsaxeln ====
 
-Varje simulation i OpenFOAM utför ett visst antal tidsiterationer, vilket ger ett visst potential till parallellism. För att testa detta tillvägagångssätt användes simpleFoam, vilket är en mycket minder komplex applikationslösare än dieselFoam. Dock visade sig resultaten långt ifrån tillräckkliga eftersom endast små delar i början och slutet av varje tidsiteration i den algoritm som simpleFoam (SIMPLE) använder kunde parallelliseras. Tidigt i varje iteration behöver man läsa från en variabel som skrivs till i slutet av föregående iteration. Det finns dock ett möjligt potential; om varje instruktion i en algoritm endast påverkar några nästkommande instruktioner.
+Varje simulation i OpenFOAM utför ett visst antal tidsiterationer, vilket ger ett visst potential till parallellism. För att testa detta tillvägagångssätt användes simpleFoam, vilket är en mycket minder komplex applikationslösare än t.ex. dieselFoam. Dock visade sig resultaten långt ifrån tillräckkliga eftersom endast små delar i början och slutet av varje tidsiteration i den algoritm som simpleFoam (SIMPLE) använder kunde parallelliseras. Tidigt i varje iteration behöver man läsa från en variabel som skrivs till i slutet av föregående iteration. Se:
 
-behöver lägga in pseudokod här för att beskriva vad som händer när vi lägger till omp ordered och för att beskriva hur tiden fungerar i OpenFOAM, hm... det får jag lägga in i Sektion 2.3 istället -Wuilbert Lopez 2010-05-10 01.03 
+{{{
+while (runTime.loop())
+{
+        ...
+        tmp<fvVectorMatrix> UEqn
+        (
+                fvm::div(phi, U) + turbulence->divDevReff(U)   // Använder både U
+        );
+        ...
+        U = UEqn().H()/AU;                                     // Nollställer U
+        ...
+        U -= fvc::grad(p)/AU;
+        U.correctBoundaryConditions();                         // Uppdatering inför NÄSTA iteration
+        ...
+}
+}}}
+
+Betrakta hur man genomgående och på ett mycket retfullt vis räknar ut saker i rätt ordning. Man beräknar `UEqn`, som använnds för att initiera `U` under varje iteration. Uträkning av `UEqn` kräver dessutom att `U` från föregående iteration är fullständigt utförd. Eftersom `U` inte beräknas förän i slutet av varje iteration och `UEqn` beräknas i ett tidigt skede av varje iteration. Finns inte mer än ett fåtal iterationer att tjäna på parallellisering längs tidsaxeln i fallet av simpleFoam.
+
+Det finns dock ett möjligt potential; om man finner en lösare där varje instruktion i algoritmen endast påverkar någon eller några nästkommande instruktioner. Då projektet var under stor tidspress hann inte detta undersökas närmare.
 
 == 3.2 Resultat ==
 
