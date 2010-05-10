@@ -1,12 +1,5 @@
 #summary Vår kära rapport
 #labels Rapport,Featured
 
-= Pretext =
-[Ordlista]
-
-= Content =
- # [Introduktion]
- # [Verktyg]
- # [Genomforande_och_resultat Genomförande och resultat]
- # [Diskussion]
- # [Sammanfattning]
+= Algoritm för multicore-processorer =
+_Gustaf Hallberg, Per Hallgren& Wuillbert Lopez
