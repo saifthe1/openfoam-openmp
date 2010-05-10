@@ -51,6 +51,7 @@ I följande text visas skillnad på kärnan av programmet och lösare som använ
 ==== 2.3.1.1 Lösare ====
 
 Det finns en uppsjö av lösare som kommer med i programvaran. Denna rapport kommer behandla tre stycken lösare simpleFoam, dieselFoam och pisoFoam. Källkoden för dessa tre ges i appendix.
+
 Under exekveringen av en lösare skriver den ut viktiga resultat och tidsmarkörer. 
 För att göra en lösare behöver man egentligen bara en algoritm. Därefter behöver man veta vilka delar av algoritmen motsvarar vilka delar i OpenFOAM. Ett exempel är simpleFoam. Nedan följer ett utdrag från openfoamwiki.net http://openfoamwiki.net/index.php/The_SIMPLE_algorithm_in_OpenFOAM -Wuilbert Lopez 2010-05-10 00.50 som förklarar vad simple algoritmen gör.  översätta? -Wuilbert Lopez 2010-05-10 00.51  Jämför den med den riktiga koden som följer direkt efter.
 
@@ -82,7 +83,7 @@ Om exempelprogrammet kräver komplicerade kommandon kommer man finna ett script 
 
 === 2.3.2 Hur det funkar ===
 
-För att ge en bättre förståelse skapar vi en egen lösare. Vi kallar den Elektrogarden. Det är en simulering av Elektrogården på Chalmers Campus Johanneberg. Modellen ska förutom rudimentär form på gården också simulera vind, regn och väggarnas ytbeläggning.2010-05-09 problem när jag la till trappor, tunnel och glasvägg; se utdelat dokument Elektrogården -Wuilbert Lopez 2010-05-09 20.28 
+För att ge en bättre förståelse skapar vi en egen *_lösare_*. Vi kallar den Elektrogarden. Det är en simulering av Elektrogården på Chalmers Campus Johanneberg. Modellen ska förutom rudimentär form på gården också simulera vind, regn och väggarnas ytbeläggning.2010-05-09 problem när jag la till trappor, tunnel och glasvägg; se utdelat dokument Elektrogården -Wuilbert Lopez 2010-05-09 20.28 
 
 ==== 2.3.2.1 Preprocessing ====
 
