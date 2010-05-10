@@ -1,19 +1,19 @@
-#summary 4. Diskussion
+summary 4. Diskussion
 
-=4 Diskussion
-==4.1 Profileringsverktyg
+=4 Diskussion=
+==4.1 Profileringsverktyg==
 Räcker GProf, vad är idealet?
-==4.2 Parallelliseringsarbete
-===4.2.1 Ramverk
+==4.2 Parallelliseringsarbete==
+===4.2.1 Ramverk===
 Valet av OpenMP har fungerat bra under projektets gång. Det har varit lätt att använda och levt upp till de förväntningar som ställts på det. Det primära alternativet, POSIX Threads hade eventuellt kunnat ge bättre resultat, men med tanke på den begränsade tidstillgången hade det antagligen inte hjälpt.
 
 Vid en eventuell parallellisering av kärnan hade den lägre overheaden kunnat ge bättre prestanda, men på den nivå som projektet rört sig hade resultatet knappast förbättrats i någon större utsträckning.
-===4.2.2 Testning
-====4.2.2.1 Benchmarks
-====4.2.2.2 Resultatverifiering
-===4.2.3 Collaborative work in parallelized programming
+===4.2.2 Testning===
+====4.2.2.1 Benchmarks====
+====4.2.2.2 Resultatverifiering====
+===4.2.3 Collaborative work in parallelized programming===
 Funkar det bättre/sämmre att programmera flera på samma projekt? Hur pass mycket mer "ömtålig" blir koden?
-===4.2.4 Approach efter hårdvara?
+===4.2.4 Approach efter hårdvara?===
 Cahcemissar är mindre kritiskta i vissa system, osv.
-==4.3 OpenFOAM
+==4.3 OpenFOAM==
 Lämplighet för vårat projekt
