@@ -1,0 +1,8 @@
+#summary Vår kära rapport
+#labels Rapport
+
+ # [Introduktion]
+ # [Verktyg]
+ # [Genomforande_och_resultat Genomförande och resultat]
+ # [Diskussion]
+ # [Sammanfattning]
