@@ -19,3 +19,5 @@ Cahcemissar är mindre kritiskta i vissa system, osv.
 OpenFOAM har en ovanlig kodstruktur, särskilt på lösarnivå eftersom den är tänkt för fysiker och inte programmerare. Detta gör att koden är svår att analysera eftersom den bryter mot många grundläggande principer för hur programkod bör skrivas.
 
 Exempelvis finns det ett antal globala variabler som används utan dokumentation. Denna typ av kod gör det mycket svårt att analysera beroenden och utröna vilka kodstycken som modifierar samma platser i minnet eftersom den variabel som modifieras kan finnas i en importerad fil, ett stort antal steg längre in i programmet.
+
+Utvecklarna har också valt att överlagra ett antal operatorer så som == och *, i vissa fall är det motiverat till exempel när de använt det för att implementera matrismultiplikation. I andra fall är det dock otydligt och svårläst och verkar ha gjorts enbart för att få koden att lika en matematisk ekvation.
