@@ -25,7 +25,7 @@ För att bedömma vilken form av parallellisering som skulle ger mest effekt är
 
 ==== 3.1.1.1 GProf ====
 
-GProf är något av industristandard när det kommer till profilering. Verktyger är enkelt, snabbt och har väldigt många inställningar för att finjustera nogrannhet. Dock utför det inte alls det arbete som behövs för att utföra parallellisering i en applikationslösare. GProf mäter funktionsanrop och hur lång tid programmet spenderar på att utföra funktionen. Att parallellisera en applikationslösare innebär att parallellisera main()-funktionen. main() anropas en gång och upptar 100% av körningstiden, vilket är otroligt irrelevant.
+GProf är något av industristandard när det kommer till profilering. Dock utför det inte alls det arbete som behövs för att utföra parallellisering i en applikationslösare då den mäter tidsåtgången vid funktionsanrop. Att parallellisera en applikationslösare innebär att parallellisera main()-funktionen. main() anropas en gång och upptar 100% av körningstiden, vilket är otroligt irrelevant.
 
 ==== 3.1.1.2 Rad-för-rad timestamps ====
 
