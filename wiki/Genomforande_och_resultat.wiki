@@ -21,7 +21,55 @@ För projektets ändamål valdes att parallellisera applikationslösaren dieselF
 === 3.1.1 Analys === 
 
 För att bedömma vilken form av parallellisering som skulle ger mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en applikationslösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
+Det är nu av värde att titta på koden för dieselFoam:
 
+{{{
+	while(runTime.run()) //tidsloopen
+	{
+
+        dieselSpray.evolve();
+
+        chemistry.solve
+        (
+            runTime.value() - runTime.deltaT().value(),
+            runTime.deltaT().value()
+        );
+
+        // turbulent time scale
+        {
+            volScalarField tk =
+                Cmix*sqrt(turbulence->muEff()/rho/turbulence->epsilon());
+            volScalarField tc = chemistry.tc();
+
+            // Chalmers PaSR model
+            kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
+        }
+
+        #include "rhoEqn.H"
+        #include "UEqn.H"
+
+        for (label ocorr=1; ocorr <= nOuterCorr; ocorr++)
+        {
+            #include "YEqn.H"
+            #include "hEqn.H"
+
+            // --- PISO loop
+            for (int corr=1; corr<=nCorr; corr++)
+            {
+                #include "pEqn.H"
+            }
+        }
+
+        turbulence->correct();
+
+        #include "spraySummary.H"
+
+        rho = thermo.rho();
+    }
+
+}}}
+Ovanstående kodstycke ska ses som pseudokod. Den verkliga koden står att finna i appendix.
+Vid en första anblick lägger man märke till den nästlade for-loopen. Iterationer av detta slag har stor potential vid parallellisering. Men det är inte tillräckligt att identifiera potential då den potentialen är beroende av vad tidsanalysen kommer fram till. Således tar vi analysverktyg till hjälp.
 
 ==== 3.1.1.1 GProf ====
 
