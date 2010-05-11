@@ -5,21 +5,21 @@
 Det praktiska arbetet har nästan uteslutande berört OpenFOAM och det är endast detta som tas upp i rapporten.
 
 == 3.1 Parallellisering av OpenFOAM ==
-
+*till per och gustaf: då målet är analys av parallelliseringsarbetet och slutsatser av densamma tycker jag vi ska beskriva vårt parallelliseringsarbete steg för steg (inom rimliga gränser), på detta sätt kan man i diskussionen peka på saker i detta avsnitt för att stödja slutsatser och åsikter*
 OpenFOAM är mycket modulärt och parallellisering i de olika delarna medför väldigt skilda resultat. En bedömning av hur förändringarna i koden påverkar projektet i helhet behövs för flertalet aspekter för att avgöra vilken del som är lämpligast att parallellisera.
 
-OpenFOAMs applikationslösare väldigt anpassade för att författare av dessa inte ska behöva några vidare programmeringskunskaper för att skriva dem. Således medför förändringar i dessa möjligen besvär för eventuella fysiker, matematiker eller kemister som uppdaterar applikationslösare. Dock kan det diskuteras huruvida ett fysikalisk beskrivning av ett flöde behöver "patchas".
+OpenFOAMs lösare är anpassade för att författare av dessa inte ska behöva några vidare programmeringskunskaper för att skriva dem. Således medför förändringar i dessa möjligen besvär för eventuella fysiker, matematiker eller kemister som uppdaterar applikationslösare. Dock kan det diskuteras huruvida ett fysikalisk beskrivning av ett flöde behöver "patchas".
 
-Att parallellisera en applikationslösare ger endast effekt för just den applikationslösaren, och möjligen några ytterligare som brukar dennes ekvationer. Effekten av parallellisering i en applikationslösare blir hur som helst begränsad till mycket få applikationer. Om en viktig del av OpenFOAMs kärna däremot skulle parallelliseras skulle en uppsnabbning av samtliga applikationslösare uppnås.
+Att parallellisera en lösare ger endast effekt för just den lösaren, och möjligen några ytterligare som brukar dennes ekvationer. Effekten av parallellisering i en lösare blir hur som helst begränsad till mycket få applikationer. Om en viktig del av OpenFOAMs kärna däremot skulle parallelliseras skulle en uppsnabbning av samtliga lösare uppnås.
 
-Kontinuitetsproblem kan uppstå vid framtagandet av en parallelliserad version av OpenFOAMs kärna. Nya versioner av OpenFOAM är bakåtkompatibla på nästan alla plan(1). Därför skulle inte dessa problem uppstå vid parallellisering av en applikationssolver. OpenCFD uppdaterar ju inte fysikaliska omständigheter, utan lägger till funktionalitet i kärnan.Tappar bort min argumenation lite här =) Återkommer. -Per Hallgren 5/5/10 10:33 AM 
+Kontinuitetsproblem kan uppstå vid framtagandet av en parallelliserad version av OpenFOAMs kärna. Nya versioner av OpenFOAM är bakåtkompatibla på nästan alla plan(1). Därför skulle inte dessa problem uppstå vid parallellisering av en lösare. OpenCFD uppdaterar ju inte fysikaliska omständigheter, utan lägger till funktionalitet i kärnan.Tappar bort min argumenation lite här =) Återkommer. -Per Hallgren 5/5/10 10:33 AM 
 (1) http://www.openfoam.com/docs/release-notes.php
 
-För projektets ändamål valdes att parallellisera applikationslösaren dieselFoam. Detta dels då att parallellisera en applikationslösare är mindre komplex än att parallellisera en algoritm i kärnan, som t.ex. gauss-elimination, matrismultiplikation, etc.. Men framför allt valdes applikationslösare för att det tar betydligt kortare tid - ca 30 sekunder istället för ett par timmar - att kompilera en applikationslösare, än att kompilera om kärnan.
+För projektets ändamål valdes att parallellisera lösaren dieselFoam. Detta dels p.g.a. parallellisera en lösare är mindre komplext än att parallellisera en algoritm i kärnan (kärnmekanism), som t.ex. gauss-elimination, matrismultiplikation, etc.. Men framför allt valdes lösare för att det tar betydligt kortare tid - ca 30 sekunder istället för ett par timmar - att kompilera en lösare, än att kompilera om kärnan.
 
 === 3.1.1 Analys === 
 
-För att bedömma vilken form av parallellisering som skulle ger mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en applikationslösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
+För att bedömma vilken form av parallellisering som skulle ger mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en lösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
 Det är nu av värde att titta på koden för dieselFoam:
 
 {{{
@@ -72,7 +72,9 @@ Vid en första anblick lägger man märke till den nästlade for-loopen. Iterati
 
 ==== 3.1.1.1 GProf ====
 
-GProf är något av industristandard när det kommer till profilering. Dock utför det inte alls det arbete som behövs för att utföra parallellisering i en applikationslösare då den mäter tidsåtgången vid funktionsanrop. Att parallellisera en applikationslösare innebär att parallellisera main()-funktionen. main() anropas en gång och upptar 100% av körningstiden, vilket är otroligt irrelevant.
+Analys m.h.a. GProf gav oss en tabell med funktioner sorterade efter tidsåtgång i procent. Genomgång av dessa funktioner gav vid handen att det var kärnmekanismer som listades. Dessa var inte av intresse då strategin var att fokusera på en lösare istället för på kärnmekanismer. Dessutom tog dessa funktioner upp stor del av tiden därför att de anropas ofta, inte för att varje körning av funktionen tar mycket tid. Detta är inte vad vi söker efter när vi vill parallellisera.
+GProf är något av industristandard när det kommer till profilering. Dock utför det inte alls det arbete som behövs för att utföra parallellisering i en lösare då den mäter tidsåtgången vid funktionsanrop. Mer om detta i avsnitt 4 Diskussion.
+
 
 ==== 3.1.1.2 Rad-för-rad timestamps ====
 
