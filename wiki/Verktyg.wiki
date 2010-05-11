@@ -1,5 +1,5 @@
 #summary 2. Verktyg
-#labels Rapport
+#labels Rapport,Featured
 
 = 2 Verktyg =
 
@@ -24,11 +24,45 @@ Detta är en stor fördel då kompilatorn ignorerar dessa pragmatiska direktiv o
 
 === 2.1.2 Worksharing ===
 
-En av de viktigaste egenskaperna med OpenMP är att dess möjlighet att tillhandahålla en otroligt väl skalande parallellism. Detta genom att de tidigare nämnda uppgifts-uppdelande kontrollblocken, och framförallt möjligheten att låta varje iteration av en for-loop skötas parallellt.
+En av de viktigaste egenskaperna med OpenMP är att dess möjlighet att tillhandahålla en otroligt väl skalande parallellism. Detta genom att de tidigare nämnda uppgifts-uppdelande kontrollblocken, och då specifikt möjligheten att låta varje iteration av en for-loop skötas parallellt. Se de två nedanstående kodstyckena som exemplifierar detta.
+
+*Kodsektion A*
+{{{
+#pragma omp sections
+{
+    #pragma omp section
+    {
+        // Work
+    }
+    #pragma omp section
+    {
+        // Work
+    }
+}
+}}}
+
+*Kodsektion B*
+{{{
+#pragma omp for
+for(int i=0; i<N; ++i)
+{
+    // Work
+}
+}}}
+
+Om man antar att tidsåtgången för att skapa trådar är försumbar kan man anta att A skulle köras dubbelt så fort på en multicore-dator som en enkärnig dator. B skulle dock köras C gånger snabbare, där C är antalet processorkärnor på den arkitektur man exekverar programmet.
+
+Då antalet trådar ej är kopplat till programmet, utan till arkitekturen den körs på, kan man använda B på vilken dator som helst, och förvänta sig en uppsnabbning med faktor C.
 
 == 2.2 Profilering ==
 
+Profilering motsvara dynamisk kodanalys. En insikt i vad detta innebär fås lättast genom att betrakta motsatsen - statisk kodanalys. Satisk kodanalys innebär att man helt enkelt analyserar koden, och betraktar hur programfödet ser ut. Dynamisk kodanalys innebär alltså att man _inte_ tittar på koden, utan bara betraktar hur programmet beter sig när det faktiskt är under exekvering.
+
+Även de programmerare som tror sig aldrig ha profilerat ett program, kan nog säkerligen minnas ett tillfälle då denne tog tid på en programkörning. Detta innebär således att programmeraren har profilerat programmet då denne analyserade programexekveringen, om än på en väldigt detaljfattig nivå.
+
 === 2.2.1 GProf ===
+
+För att underlätta profileringsarbetet har som tidigare nämnts gprof använts. Programmet mäter tidsåtgången för varje funktion.s
 
 === 2.2.1 VampirTrace ===
 
@@ -67,26 +101,23 @@ The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple
 
 The steps 4 and 5 can be repeated for a prescribed number of time to correct for non-orthogonality.
 {{{
-    while (runTime.loop())
+while (runTime.loop())
+{
+    #include "readSIMPLEControls.H"
+    #include "initConvergenceCheck.H"
+
+    p.storePrevIter();
+    // Pressure-velocity SIMPLE corrector
     {
-        #include "readSIMPLEControls.H"
-        #include "initConvergenceCheck.H"
-
-        p.storePrevIter();
-
-        // Pressure-velocity SIMPLE corrector
-        {
-            #include "UEqn.H"
-            #include "pEqn.H"
-        }
-
-        turbulence->correct();
-
-        runTime.write();
-
-
-        #include "convergenceCheck.H"
+        #include "UEqn.H"
+        #include "pEqn.H"
     }
+
+    turbulence->correct();
+    runTime.write();
+
+    #include "convergenceCheck.H"
+}
 }}}
 passa på att förklarar tidsloopen, lägg upp den för Per i sektion 3 =) -Wuilbert Lopez 2010-05-10 01.05 
 
