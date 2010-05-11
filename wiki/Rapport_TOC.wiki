@@ -4,6 +4,6 @@
  	= Content =
  	 # [Introduktion]
  	 # [Verktyg]
- 	 # [Genomforande_och_resultat Genomförande och resultat]
+ 	 # [Resultat]
  	 # [Diskussion]
  	 # [Sammanfattning]
