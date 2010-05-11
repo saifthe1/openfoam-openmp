@@ -1,7 +1,7 @@
-#summary 3. Genomförande och resultat
+#summary 3. Resultat
 #labels Rapport,Featured
 
-= 3. Genomförande och resultat = 
+= 3. Resultat = 
 
 Det praktiska arbetet har nästan uteslutande berört OpenFOAM och det är endast detta som tas upp i rapporten.
 
@@ -128,7 +128,7 @@ Betrakta hur man genomgående och på ett mycket retfullt vis räknar ut saker i
 
 Det finns dock ett möjligt potential; om man finner en lösare där varje instruktion i algoritmen endast påverkar någon eller några nästkommande instruktioner. Då projektet var under stor tidspress hann inte detta undersökas närmare.
 
-== 3.2 Resultat ==
+== 3.2 Resultatredovisning ==
 
 Resultaten härrör från parallellisering i dieselFoam genom uppdelning av solve()'s parametrar.
 
