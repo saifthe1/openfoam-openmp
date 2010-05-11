@@ -74,23 +74,56 @@ Each sample counts as 0.01 seconds.
 {{{
 unsigned int step (unsigned int x)
 {
-    if (x % 2 == 0)
-    {
+    if (x % 2 == 0)     
+    {           
         return (x / 2);
     }
     else
-    {
+    {                              
         return (3 * x + 1);
+    }                  
+}                          
+               
+unsigned int nseq (unsigned int x0)
+{                                 
+    unsigned int i = 1, x;
+                         
+    if (x0 == 1 || x0 == 0)
+      return i;
+
+    x = step (x0);
+ 
+    while (x != 1 && x != 0)
+    {          
+        x = step (x);
+        i++;                          
     }
+                                    
+    return i;
 }
 }}}
 Bytes mot
 {{{
 unsigned int step (unsigned int x)
 {
-    return x % 2 == 0 ?
-              x / 2
-            : 3 * x + 1;
+    return (x & 1) == 0
+        ? x / 2
+        : 3 * x + 1;
+}
+
+unsigned int nseq (unsigned int x0)
+{
+    unsigned int i = 1;
+    if (x0 == 1 || x0 == 0)
+      return 1;
+
+    for(unsigned int x = step(x0);
+        x != 1 && x != 0;
+        x = step (x), ++i
+        )
+    ;
+
+    return i;
 }
 }}}
 
@@ -101,9 +134,9 @@ Flat profile:
 Each sample counts as 0.01 seconds.
   %   cumulative   self              self     total           
  time   seconds   seconds    calls  us/call  us/call  name    
- 54.97     65.80    65.80 39999980     1.64     2.98  nseq(unsigned int)
- 44.57    119.14    53.34 1248562184     0.04     0.04  step(unsigned int)
-  0.46    119.69     0.56                             main
+ 54.93     64.94    64.94 39999980     1.62     2.94  nseq(unsigned int)
+ 44.64    117.70    52.77 1248562184     0.04     0.04  step(unsigned int)
+  0.43    118.21     0.51                             main
 }}}
 
 == Parallellisering ==
