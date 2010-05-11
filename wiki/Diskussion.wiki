@@ -5,7 +5,9 @@
 
 == 4.1 Profileringsverktyg ==
 
-Räcker GProf, vad är idealet?
+Som omnämnt i kapitel 3.1.1.1 förefaller gprof sig ej vara lämpat för parallelliseringsarbete. En tidsåtgång per funktionsanrop kan till vara väldigt bra när man skall optimera ett program. Dock är det inte alls lika relevant när man vill parallellisera ett program.
+
+Ett profileringsverktyg som operar på rad-för-rad basis istället för funktion-för-funktion basis skulle passat vårat projekt mycket bättre. Ett sådant verktyg skulle gärna profilera tiden kring varje block, såväl som varje rad. På så vis skulle det göra precis det jobb gprof gör, fast med större detaljrikedom.
 
 == 4.2 Parallelliseringsarbete ==
 
