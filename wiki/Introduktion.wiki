@@ -62,6 +62,16 @@ För att profilera och analysera körning program bestämdes att använda gprof,
 
 == 1.6 Resultatsammanfattning ==
 
-Det viktigaste resultatet från arbetet med OpenFOAM har varit insikten att de verktyg som används vid parallelliseringsarbete är långt ifrån tillräckliga. GProf kan i stor utsträckning ses som industristandard när det kommer till profilering. Dock var GProf inte till alls stor nytta i det här fallet, och ett eget verktyg för tidtagning utvecklades för att tillhandahålla rofilering.
+Det viktigaste resultatet från arbetet med OpenFOAM har varit insikten att vissa av de verktyg som används vid parallelliseringsarbete är långt ifrån fullkomliga. Det främsta exemplet är gprof, som i stor utsträckning kan ses som industristandard vid profilering. Dock var GProf inte till alls stor nytta i det här fallet eftersom det ger information endast om hur funktioner behandlas. Då vi inte alls behöver parallellisera en hel funktion utvecklades ett eget verktyg för att tillhandahålla profilering kring egendinierade sektioner.
 
 Andra viktiga slutsatser har varit de svårigheter som finns vid uppskattning av en möjlig tidsvinst av parallellisering, och att i seriell kod hitta stycken som är parallelliseringsvänliga.
+
+Ett av de största problemen som uppstått under projektets gång har varit sporadiska skillnader vid identiska testkörningar. Dessa uppstår inte på grånd av något fel eller egentligen något alls underligt, utan kan härledas till att vi har operativsystem och många andra processer körandes i bakgrunden. Man vill gärna låta sitt testprogram köras under en tidsrymd av ett fåtal sekunder, men gör man det så kommer variationen att vara så stor att en uppsnabbning blir omöjlig att mäta.
+
+== 1.7 Disposition ==
+
+Rapporten kommer under kapitel `2. Verktyg` att behandla de olika programvaror som använts för att utföra parallelliseringsarbetet. Kapitlet behandlar även OpenFOAM till sådan grad att läsaren skall kunna ta till sig resultat och diskussion på ett givande sätt.
+
+Under kapitel `3. Genomförande och resultat` presenteras först projektets arbetsgång och sedan de resultat projektet slutligen resulterade i. Samtliga fakta presenteras i detta avsnitt.
+
+Kapitel `4. Diskussion` bearbetar de resultat som presenterats i det föregående kapitlet. Här ledes läsaren in i en argumentation till varför nya verktyg bör tas fram och hur dessa skall fungera.
