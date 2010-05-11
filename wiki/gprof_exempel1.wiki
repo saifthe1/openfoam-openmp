@@ -56,9 +56,19 @@ int main (void)
     return 0;
 }
 }}}
+= Profilering via gprof =
+{{{
+Flat profile:
 
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  us/call  us/call  name    
+ 53.60      0.59     0.59   499999     1.19     2.22  nseq
+ 46.40      1.11     0.52 62135400     0.01     0.01  step
+}}}
 
-= Optimerat =
+= Försök till prestandaökning =
+== Optimering ==
 
 {{{
 unsigned int step (unsigned int x)
@@ -83,7 +93,7 @@ unsigned int step (unsigned int x)
 }
 }}}
 
-= Parallelliserat =
+== Parallellisering ==
 
 {{{
 int main (void)
