@@ -1,4 +1,5 @@
-summary 4. Diskussion
+#summary 4. Diskussion
+#labels Rapport,Featured
 
 =4 Diskussion=
 ==4.1 Profileringsverktyg==
