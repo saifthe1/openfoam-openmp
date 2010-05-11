@@ -50,7 +50,7 @@ for(int i=0; i<N; ++i)
 }
 }}}
 
-Om man antar att tidsåtgången för att skapa trådar är försumbar kan man anta att A skulle köras dubbelt så fort på en multicore-dator som en enkärnig dator. B skulle dock köras C gånger snabbare, där C är antalet processorkärnor på den arkitektur man exekverar programmet.
+Om man antar att tidsåtgången för att skapa trådar är försumbar kan man anta att A skulle köras dubbelt så fort på en multicore-processor som en enkärnig processor. B skulle dock köras C gånger snabbare, där C är antalet processorkärnor på den arkitektur man exekverar programmet.
 
 Då antalet trådar ej är kopplat till programmet, utan till arkitekturen den körs på, kan man använda B på vilken dator som helst, och förvänta sig en uppsnabbning med faktor C.
 
