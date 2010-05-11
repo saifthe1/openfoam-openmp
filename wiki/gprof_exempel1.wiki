@@ -59,12 +59,12 @@ int main (void)
 = Profilering via gprof =
 {{{
 Flat profile:
-
 Each sample counts as 0.01 seconds.
-  %   cumulative   self              self     total           
- time   seconds   seconds    calls  us/call  us/call  name    
- 53.60      0.59     0.59   499999     1.19     2.22  nseq
- 46.40      1.11     0.52 62135400     0.01     0.01  step
+ %     cumul.    self             self   total           
+time  seconds seconds    calls us/call us/call name    
+68.59    2.14    2.14 62135400    0.03    0.03 step
+31.09    3.11    0.97   499999    1.94    6.22 nseq
+ 0.32    3.12    0.01                          main
 }}}
 
 = Försök till prestandaökning =
