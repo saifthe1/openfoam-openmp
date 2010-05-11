@@ -62,9 +62,7 @@ Profilering motsvara dynamisk kodanalys. En insikt i vad detta innebär fås lä
 
 === 2.2.1 GProf ===
 
-För att underlätta profileringsarbetet har som tidigare nämnts gprof använts. Programmet mäter tidsåtgången för varje funktion.s
-
-=== 2.2.1 VampirTrace ===
+För att underlätta profileringsarbetet har som tidigare nämnts gprof använts. Verktyger är enkelt, snabbt och har väldigt många inställningar för att finjustera nogrannhet. Programmet mäter tidsåtgång och antal anrop för varje funktion, samtidigt som den spara information om anropsgrafen.
 
 == 2.3 OpenFOAM ==
 
