@@ -66,11 +66,9 @@ The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple
    # Repeat till convergence.
 
 The steps 4 and 5 can be repeated for a prescribed number of time to correct for non-orthogonality.
-
+{{{
     while (runTime.loop())
     {
-
-
         #include "readSIMPLEControls.H"
         #include "initConvergenceCheck.H"
 
@@ -89,7 +87,7 @@ The steps 4 and 5 can be repeated for a prescribed number of time to correct for
 
         #include "convergenceCheck.H"
     }
-
+}}}
 passa på att förklarar tidsloopen, lägg upp den för Per i sektion 3 =) -Wuilbert Lopez 2010-05-10 01.05 
 
 Det riktigt intressanta med dessa lösare är att vem som helst med kunskaper i flödesdynamik ska kunna sätta ihop en egen lösare. Grundkunskaper i programmering ska vara det enda kravet för att klara av detta. Jämför med andra program eller projekt där expert kunskaper kan behövas för att få en funktion eller modul att fungera och använda sig av tidigare verktyg.
