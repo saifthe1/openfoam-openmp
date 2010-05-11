@@ -76,17 +76,18 @@ En fysikalisk eller kemisk process kan givetvis ske under många olika förhåll
 
 (`http://openfoam.com/docs/user/img/user0x.png`)
 
-Figuren ovan visar den verkliga arbetsgången för en simulering.
-
-I följande text visas skillnad på kärnan av programmet och lösare som använder sig av kärnan i programmet. Lösare är program som löser specifika problem inom flödesdynamiken. Dessa använder sig av verktyg som har hand om datamanipulering och algebraiska beräkningar. Vidare har man kärnmekanismer och simuleringsfall. Dessa fyra saker utgör de viktigaste aspekterna av OpenFOAM. 
+Figuren ovan visar den verkliga arbetsgången för en simulering.User Applications och Standard Applications kallas i texten lösare. Utilities och Meshing Tools kallas verktyg. OpenFOAM C++ Library kallas kärnmekańismer. Solving kallas simuleringsfall. Pre-processing och Post-processing kommer bara nämnas där det är absolut nödvändigt för förståelse.
 
 ==== 2.3.1.1 Lösare ====
-
+Lösare är program som löser specifika problem inom flödesdynamiken. Dessa använder sig av verktyg som har hand om datamanipulering och algebraiska beräkningar.
 Det finns en uppsjö av lösare som kommer med i programvaran. Denna rapport kommer behandla tre stycken lösare simpleFoam, dieselFoam och pisoFoam. Källkoden för dessa tre ges i appendix.
 
-För att göra en lösare behöver man egentligen bara en algoritm. Därefter behöver man veta vilka delar av algoritmen motsvarar vilka delar i OpenFOAM. Vanligtvis kräver en överföring från algoritm till kod avsevärt mycker mer ansträngning än så här. simpleFoam tas som exempel för att illustrera förfarandet. Nedan följer ett utdrag från openfoamwiki.net http://openfoamwiki.net/index.php/The_SIMPLE_algorithm_in_OpenFOAM -Wuilbert Lopez 2010-05-10 00.50 som förklarar vad simple algoritmen gör.  översätta? -Wuilbert Lopez 2010-05-10 00.51  Jämför den med den riktiga koden som följer direkt efter.
+Det riktigt intressanta med lösare i OpenFOAM är att vem som helst med kunskaper i flödesdynamik ska kunna sätta ihop en egen. Grundkunskaper i programmering ska vara det enda kravet för att klara av detta. *OpenCFD säljer kurser*
+simpleFoam tas som exempel för att illustrera förfarandet. Nedan följer ett utdrag från openfoamwiki.net
+http://openfoamwiki.net/index.php/The_SIMPLE_algorithm_in_OpenFOAM -Wuilbert Lopez 2010-05-10 00.50
+som förklarar vad simple algoritmen gör. Jämför den med den riktiga koden som följer direkt efter.
 
-The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple the Navier-Stokes equations with an iterative procedure, which can be summed up as follows:
+   The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple the Navier-Stokes equations with an iterative procedure, which can be summed up as follows:
 
    # Set the boundary conditions.
    # Solve the discretized momentum equation to compute the intermediate velocity field.
@@ -97,7 +98,6 @@ The SIMPLE (Semi-Implicit Method for Pressure-Linked Equations) allows to couple
    # Update the boundary conditions.
    # Repeat till convergence.
 
-The steps 4 and 5 can be repeated for a prescribed number of time to correct for non-orthogonality.
 {{{
 while (runTime.loop())
 {
@@ -119,7 +119,6 @@ while (runTime.loop())
 }}}
 passa på att förklarar tidsloopen, lägg upp den för Per i sektion 3 =) -Wuilbert Lopez 2010-05-10 01.05 
 
-Det riktigt intressanta med dessa lösare är att vem som helst med kunskaper i flödesdynamik ska kunna sätta ihop en egen lösare. Grundkunskaper i programmering ska vara det enda kravet för att klara av detta. Jämför med andra program eller projekt där expert kunskaper kan behövas för att få en funktion eller modul att fungera och använda sig av tidigare verktyg.
 
 ==== 2.3.1.2 Verktyg ====
 
@@ -129,7 +128,7 @@ Efter att en simulering har körts finns det naturligtvis verktyg för att analy
 
 ==== 2.3.1.3 Kärnmekanismer ====
 
-Om ändringar i lösare är enkelt så är ändringar i OpenFOAM kärnan desto svårare. Både lösare och verktyg använder sig av kärnmekanismer. Ett exempel på en kärnmekanism är solve. Den får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (hastighet och tryck t.ex.) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. 
+Om ändringar i lösare är enkelt så är ändringar i OpenFOAM kärnan desto svårare. Både lösare och verktyg använder sig av kärnmekanismer. Ett exempel på en kärnmekanism är solve. Den får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (t.ex. hastighet och tryck) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. 
 
 ==== 2.3.1.4 Simuleringsfall ====
 
