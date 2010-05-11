@@ -62,6 +62,6 @@ För att profilera och analysera körning program bestämdes att använda gprof,
 
 == 1.6 Resultatsammanfattning ==
 
-Det viktigaste resultatet från arbetet med OpenFOAM har varit insikten att de verktyg som används vid parallelliseringsarbete är långt ifrån fullkomliga. GProf kan i stor utsträckning ses som industristandard när det kommer till profilering. Dock var GProf inte till alls stor nytta i det här fallet, och ett eget verktyg för tidtagning utvecklades för att tillhandahålla rofilering.
+Det viktigaste resultatet från arbetet med OpenFOAM har varit insikten att de verktyg som används vid parallelliseringsarbete är långt ifrån tillräckliga. GProf kan i stor utsträckning ses som industristandard när det kommer till profilering. Dock var GProf inte till alls stor nytta i det här fallet, och ett eget verktyg för tidtagning utvecklades för att tillhandahålla rofilering.
 
 Andra viktiga slutsatser har varit de svårigheter som finns vid uppskattning av en möjlig tidsvinst av parallellisering, och att i seriell kod hitta stycken som är parallelliseringsvänliga.
