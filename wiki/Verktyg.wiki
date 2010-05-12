@@ -77,11 +77,11 @@ En fysikalisk eller kemisk process kan givetvis ske under många olika förhåll
 (`http://openfoam.com/docs/user/img/user0x.png`)
 
 Figuren ovan visar den verkliga arbetsgången för en simulering.
-*User Applications och Standard Applications kallas i texten lösare.
-*Utilities och Meshing Tools kallas verktyg.
-*OpenFOAM C++ Library kallas kärnmekańismer.
-*Solving kallas simuleringsfall.
-*Pre-processing och Post-processing kommer bara nämnas där det är absolut nödvändigt för förståelse.
+  * User Applications och Standard Applications kallas i texten lösare.
+  * Utilities och Meshing Tools kallas verktyg.
+  * OpenFOAM C++ Library kallas kärnmekańismer.
+  * Solving kallas simuleringsfall.
+  * Pre-processing och Post-processing kommer bara nämnas där det är absolut nödvändigt för förståelse.
 
 ==== 2.3.1.1 Lösare ====
 Lösare är program som löser specifika problem inom flödesdynamiken. Dessa använder sig av verktyg som har hand om datamanipulering och algebraiska beräkningar.
