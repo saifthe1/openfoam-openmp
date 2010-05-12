@@ -18,7 +18,7 @@ För projektets ändamål valdes att parallellisera lösaren dieselFoam. Detta d
 
 === 3.1.1 Analys === 
 
-För att bedömma vilken form av parallellisering som skulle ger mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en lösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
+För att bedömma vilken form av parallellisering som skulle ge mest effekt är profilering och analys av koden en självklarhet. Parallellisering av en lösare är problematiskt då den är ämnad att lösa ett fysikaliskt problem, och därmed förenklat kan beskrivas som en serie uträkningar. Dessa uträkningar måste ofta utföras i korrekt ordning.
 Det är nu av värde att titta på koden för dieselFoam:
 
 {{{
