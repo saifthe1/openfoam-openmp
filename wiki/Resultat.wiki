@@ -14,7 +14,7 @@ Att parallellisera en lösare ger endast effekt för just den lösaren, och möj
 Kontinuitetsproblem kan uppstå vid framtagandet av en parallelliserad version av OpenFOAMs kärna. Nya versioner av OpenFOAM är bakåtkompatibla på nästan alla plan(1). Därför skulle inte dessa problem uppstå vid parallellisering av en lösare. OpenCFD uppdaterar ju inte fysikaliska omständigheter, utan lägger till funktionalitet i kärnan.Tappar bort min argumenation lite här =) Återkommer. -Per Hallgren 5/5/10 10:33 AM 
 (1) http://www.openfoam.com/docs/release-notes.php
 
-För projektets ändamål valdes att parallellisera lösaren dieselFoam. Detta dels p.g.a. parallellisera en lösare är mindre komplext än att parallellisera en algoritm i kärnan (kärnmekanism), som t.ex. gauss-elimination, matrismultiplikation, etc.. Men framför allt valdes lösare för att det tar betydligt kortare tid - ca 30 sekunder istället för ett par timmar - att kompilera en lösare, än att kompilera om kärnan.
+För projektets ändamål valdes att parallellisera lösaren dieselFoam. Detta dels på grund av att parallellisera en lösare är mindre komplext än att parallellisera en algoritm i kärnan (kärnmekanism), som till exempel gauss-elimination, matrismultiplikation, etc.. Men framför allt valdes lösare för att det tar betydligt kortare tid - ca 30 sekunder istället för ett par timmar - att kompilera en lösare, än att kompilera om kärnan.
 
 === 3.1.1 Analys === 
 
