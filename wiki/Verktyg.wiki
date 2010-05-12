@@ -121,18 +121,18 @@ while (runTime.loop())
 }
 }}}
 Punkterna 1-8 i algoritmen matchar punkterna i koden. Man ser att koden följer algoritmen väldigt väl. Man måste naturligtvis sätta sig in i OpenFOAM och vad den kräver för att uträtta en viss uppgift men som synes av koden är det lite som att bygga med Legoklossar. Alla delar finns där redan, dvs alla verktyg. En kort genomgång av koden är nu på sin plats. 
-Översta raden är en while-loop, i fortsättningen kallar vi den för tidsloopen. Man anger i en separat fil (se 2.3.1.2) hur länge man vill att simuleringen ska köras och tidsloopen sköter detta åt oss.
+Översta raden är en while-loop, i fortsättningen kallar vi den för tidsloopen. Man anger i en separat fil (se 2.3.1.4) hur länge man vill att simuleringen ska köras och tidsloopen sköter detta åt oss.
+UEqn.H och pEqn.H sköter ekvationslösning åt oss. I dessa finns en funktion benämnd solve(). Den beskrivs närmare i 2.3.1.3.
 
 
 ==== 2.3.1.2 Verktyg ====
 
 Alla problem som innebär en modell i 2-D eller högre behöver minst ett datagenereringsverktyg, blockMesh. Det tar en fil med beskrivning av modellen och bygger den. Det gör blockMesh m.h.a. kärnmekanismer.
-Lösarna själva använder verktyg och de kan variera från lösare till lösare
 Efter att en simulering har körts finns det naturligtvis verktyg för att analysera simuleringen. Det kanske viktigaste av dessa verktyg är paraFoam. Det visar modellen grafiskt och man kan via kontrollknappar stega sig igenom simuleringen. Om en del av simuleringen har gått snett är det relativt enkelt att se det i paraFoam. Det finns även alternativ för att kolla på en specifik variabel såsom tryck över hela modellen.
 
 ==== 2.3.1.3 Kärnmekanismer ====
 
-Om ändringar i lösare är enkelt så är ändringar i OpenFOAM kärnan desto svårare. Både lösare och verktyg använder sig av kärnmekanismer. Ett exempel på en kärnmekanism är solve. Den får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (t.ex. hastighet och tryck) och beräknar lösningen. Man kan betrakta solve som motorn i varje lösare. 
+Om ändringar i lösare är enkelt så är ändringar i OpenFOAM kärnan desto svårare. Både lösare och verktyg använder sig av kärnmekanismer. Ett exempel på en kärnmekanism är solve. Den får som argument ekvationer (i form av matriser) som beskriver någon egenskap i modellen (t.ex. hastighet och tryck) och beräknar lösningen.
 
 ==== 2.3.1.4 Simuleringsfall ====
 
