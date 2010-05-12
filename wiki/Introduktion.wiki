@@ -11,15 +11,13 @@ Under slutfasen av projektet har vi i samråd med Volvo Technology tagit oss an 
 
 Sedan datorn uppfanns har dess utveckling som bekant följt Moores Lag: ”Antalet transistorer som kan placeras på en yta fördubblas vartannat år.” Detta har inneburit en motsvarande prestandaökning för processorer och andra datorkomponenter.
 
-=== 1.1.1 Multipla processorer ===
-
 I många år har denna ökning hållit i sig och datorernas hastighet har ökat exponentiellt. I början på 2000-talet har denna trend stött på ett hinder, istället för att utrymmet på kiselchipet hindrar prestandaökning är det värmeutvecklingen från komponenterna som stoppar utvecklingen. Detta är ett problem som varit svårt att avhjälpa med konventionella tekniker och man har därför fått ta fram nya lösningar.
 
 Istället för att öka antalet transistorer i varje processor har många tillverkare valt att sätta flera processorer i samma dator. Dessa delar sedan på minne och andra resurser i datorn men kan arbeta med varsin uppgift parallellt.
 
 I servrar och stordatorer för forskning har detta realiserats genom flera helt självständiga processorer med egna cacheminnen och kommunikationsvägar till resten av datorn. I persondatorer är det vanligaste istället att man istället har flera processorkärnor, den del av processorn som utför själva beräkningarna, som delar på cacheminne och kommunikationsmöjligheter.
 
-=== 1.1.2 Parallellismens problematik ===
+=== 1.1.1 Parallellismens problematik ===
 
 En vanlig enkärnig dator kan bara utföra en beräkning i taget, men genom att den arbetar så fort kan den rotera olika uppgifter så att den verkar arbeta med dem parallellt. Detta gör att du kan leva i illusionen av att Spotify spelar musik samtidigt som Firefox laddar en hemsida, trots att all kod körs sekventiellt.
 
