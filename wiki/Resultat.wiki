@@ -5,7 +5,6 @@
 Det praktiska arbetet har nästan uteslutande berört OpenFOAM och det är endast detta som tas upp i rapporten.
 
 == 3.1 Parallellisering av OpenFOAM ==
-*till per och gustaf: då målet är analys av parallelliseringsarbetet och slutsatser av densamma tycker jag vi ska beskriva vårt parallelliseringsarbete steg för steg (inom rimliga gränser), på detta sätt kan man i diskussionen peka på saker i detta avsnitt för att stödja slutsatser och åsikter*
 OpenFOAM är mycket modulärt och parallellisering i de olika delarna medför väldigt skilda resultat. En bedömning av hur förändringarna i koden påverkar projektet i helhet behövs för flertalet aspekter för att avgöra vilken del som är lämpligast att parallellisera.
 
 OpenFOAMs lösare är anpassade för att författare av dessa inte ska behöva några vidare programmeringskunskaper för att skriva dem. Således medför förändringar i dessa möjligen besvär för eventuella fysiker, matematiker eller kemister som uppdaterar applikationslösare. Dock kan det diskuteras huruvida ett fysikalisk beskrivning av ett flöde behöver "patchas".
