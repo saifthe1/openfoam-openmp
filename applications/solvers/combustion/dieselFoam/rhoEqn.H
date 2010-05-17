@@ -24,7 +24,7 @@ List<bool> dieselSprayArray = dieselSpray.isLiquidFuel();
 //int chunk = Y.size() / omp_get_num_threads();
 //#pragma omp parallel for default(shared) private(i) schedule(static, chunk)
 //#endif
-TS_START("rho > for");
+TS_START("rhoEqn.H > for");
 for (label i=0; i<Y.size(); i++)
 {
     if (dieselSprayArray[i])
@@ -32,26 +32,26 @@ for (label i=0; i<Y.size(); i++)
         Sevap += dieselSpray.evaporationSource(i);
     }
 }
-TS_END("rho > for");
+TS_END("rhoEqn.H > for");
 
 {
-	TS_START("rho > solve");
+	TS_START("rhoEqn.H > solve");
 /*
 	#ifdef PARALLELIZE
-	TS_START("rho > 1");
+	TS_START("rhoEqn.H > 1");
     fvm::ddt(rho);
-	TS_END("rho > 1");
+	TS_END("rhoEqn.H > 1");
 
-	TS_START("rho > 2");
+	TS_START("rhoEqn.H > 2");
     fvc::div(phi);
-	TS_END("rho > 2");
+	TS_END("rhoEqn.H > 2");
 
-	TS_START("rho > 3");
+	TS_START("rhoEqn.H > 3");
     fvm::ddt(rho) + fvc::div(phi);
-	TS_END("rho > 3");
+	TS_END("rhoEqn.H > 3");
 	#else
 */
-	TS_START("rho > solve()");
+	TS_START("rhoEqn.H > solve()");
     solve
     (
         fvm::ddt(rho)
@@ -59,9 +59,9 @@ TS_END("rho > for");
       ==
         Sevap
     );
-	TS_END("rho > solve()");
+	TS_END("rhoEqn.H > solve()");
 //	#endif
-	TS_END("rho > solve");
+	TS_END("rhoEqn.H > solve");
 }
 
 TS_TOGGLE(false);

@@ -1,1 +1,1 @@
-EXE = $(FOAM_APPBIN)/dieselFoam ~/OpenFOAM/timestamp.cpp
+EXE = $(FOAM_APPBIN)/dieselFoamPar ~/OpenFOAM/timestamp.cpp

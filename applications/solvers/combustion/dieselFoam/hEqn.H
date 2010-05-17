@@ -16,12 +16,12 @@ else
 		#pragma omp section
 		{
 			TS_START("hEqn.H > solve > left1");
+			left1 = new fvScalarMatrix(fvm::ddt(rho, h)());
 			TS_END("hEqn.H > solve > left1");
 		}
 		#pragma omp section
 		{
 			TS_START("hEqn.H > solve > left2 + left3 + right");
-			left1 = new fvScalarMatrix(fvm::ddt(rho, h)());
 			left2 = new fvScalarMatrix(mvConvection->fvmDiv(phi, h));
 			left3 = new fvScalarMatrix(fvm::laplacian(turbulence->alphaEff(), h));
 			right = new volScalarField(DpDt + dieselSpray.heatTransferSource());

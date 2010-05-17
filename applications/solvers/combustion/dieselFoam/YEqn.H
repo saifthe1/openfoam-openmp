@@ -23,6 +23,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	 * const unsigned int chunk = Y.size() / omp_get_num_threads();
 	 * #pragma omp for default(shared) private(i) schedule(static, chunk)
 	 **/
+	TS_START("YEqn.H > for");
     for (label i=0; i< Y.size(); i++)
     {
         if (Y[i].name() != inertSpecie)
@@ -91,6 +92,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             inertIndex = i;
         }
     }
+	TS_END("YEqn.H > for");
 	Y[inertIndex] = scalar(1) - Yt;
     Y[inertIndex].max(0.0);
 }

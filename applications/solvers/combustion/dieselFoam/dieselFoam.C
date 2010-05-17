@@ -33,7 +33,7 @@ Description
 #include <iomanip>
 
 #include <omp.h>
-	#define PARALLELIZE 1
+//	#define PARALLELIZE 1
 
 #include "/home/zut/OpenFOAM/timestamp.hpp"
 
@@ -45,7 +45,7 @@ Description
 	#define PRINT_YEqn			0x20	// 0010 0000
 	#define PRINT_ALL			0xFF	// 1111 1111
 
-	const unsigned int PRINTVECTOR = PRINT_ALL & ~PRINT_pEqn & ~PRINT_rhoEqn;
+	const unsigned int PRINTVECTOR = PRINT_ALL;
 
 
 #include "fvCFD.H"
@@ -63,6 +63,7 @@ Description
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 int main(int argc, char *argv[])
 {
+	int asdf = 0;
 	TS_TOGGLE(false);
 //	omp_set_num_threads(4);
 	
@@ -97,13 +98,13 @@ int main(int argc, char *argv[])
         #include "setDeltaT.H"
 
         runTime++;
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+//        Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        Info << "Evolving Spray" << endl;
+//        Info << "Evolving Spray" << endl;
 
         dieselSpray.evolve();
 
-        Info << "Solving chemistry" << endl;
+//        Info << "Solving chemistry" << endl;
 
         chemistry.solve
         (
@@ -121,13 +122,15 @@ int main(int argc, char *argv[])
             kappa = (runTime.deltaT() + tc)/(runTime.deltaT()+tc+tk);
         }
 
+		TS_START("rhoEqn.H");
         #include "rhoEqn.H"
 		if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+		TS_END("rhoEqn.H");
 		TS_START("UEqn.H");
         #include "UEqn.H"
 		if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
 		TS_END("UEqn.H");
-
+std::cout << "nOuterCorr: " << nOuterCorr << std::endl;
         for (label ocorr=1; ocorr <= nOuterCorr; ocorr++)
         {
 			TS_START("YEqn.H");
@@ -143,28 +146,27 @@ int main(int argc, char *argv[])
             // --- PISO loop
             for (int corr=1; corr<=nCorr; corr++)
             {
+				TS_START("pEqn.H");
                 #include "pEqn.H"
+				if((PRINTVECTOR & PRINT_dieselFoam) > 0) TS_TOGGLE(true); else TS_TOGGLE(false);
+				TS_END("pEqn.H");
             }
         }
 
-		std::cout << "turbulence->correct()" << std::endl;
         turbulence->correct();
 
         #include "spraySummary.H"
 
-		std::cout << "thermo.rho()" << std::endl;
         rho = thermo.rho();
 
-		std::cout << "runTime.write()" << std::endl;
         if (runTime.write())
         {
-			std::cout << "chemistry.dQ()().write();" << std::endl;
             chemistry.dQ()().write();
         }
 
-        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
-            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-            << nl << endl;
+//        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+//            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
+//            << nl << endl;
     }
 
     Info<< "End\n" << endl;
