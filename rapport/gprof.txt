@@ -1,0 +1,3 @@
+Fenlason J., Osier J., Stallman R. (1994) GNU gprof. GNU gprof. http://www.cs.utah.edu/dept/old/texinfo/as/gprof_toc.html (2010-05-19)
+
+(Fenlason 1994)
